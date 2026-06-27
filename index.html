@@ -210,12 +210,16 @@
   <div class="modal" id="modal"></div>
 </div>
 
-<script src="assets/crypto.js"></script>
 <script>
-const LS_KEY = "bcv_unlocked"; // { recipeId: code }
+// Kết nối Supabase (publishable key — công khai, an toàn để lộ)
+const SB_URL = "https://gozrtreliolqpnallhye.supabase.co";
+const SB_KEY = "sb_publishable_85YdL8vEQbVyNS13Scb0Jw_dR-AFW7m";
+const SB_H = { apikey: SB_KEY, Authorization: "Bearer " + SB_KEY, "Content-Type": "application/json" };
+
+const LS_KEY = "bcv_unlocked"; // { recipeId: <nội dung công thức đã mở> }
 let DATA = null;
 let activeCat = "Tất cả";
-let pollTimer = null;          // bộ đếm tự kiểm tra thanh toán (chế độ tự động)
+let pollTimer = null;          // bộ đếm tự kiểm tra thanh toán
 
 const money = n => (n || 0).toLocaleString("vi-VN") + "đ";
 const $ = s => document.querySelector(s);
@@ -225,12 +229,26 @@ function getUnlocked() {
 }
 function saveUnlocked(map) { localStorage.setItem(LS_KEY, JSON.stringify(map)); }
 
+async function sbRpc(fn, args) {
+  try {
+    const res = await fetch(SB_URL + "/rest/v1/rpc/" + fn, { method: "POST", headers: SB_H, body: JSON.stringify(args) });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch (e) { return null; }
+}
+
 async function init() {
   try {
-    const res = await fetch("content.json?v=" + Date.now());
-    DATA = await res.json();
+    const [cfgRes, recRes] = await Promise.all([
+      fetch(SB_URL + "/rest/v1/site_config?id=eq.1&select=data", { headers: SB_H }),
+      fetch(SB_URL + "/rest/v1/recipes?select=*&order=sort.asc,created_at.asc", { headers: SB_H })
+    ]);
+    const cfg = await cfgRes.json();
+    const recipes = await recRes.json();
+    const conf = (cfg[0] && cfg[0].data) || {};
+    DATA = { site: conf.site || {}, payment: conf.payment || {}, recipes: Array.isArray(recipes) ? recipes : [] };
   } catch (e) {
-    $("#grid").innerHTML = '<div class="empty">Không tải được dữ liệu (content.json).</div>';
+    $("#grid").innerHTML = '<div class="empty">Không tải được dữ liệu.</div>';
     return;
   }
   renderSite();
@@ -315,10 +333,7 @@ function paymentRows(r) {
     <div class="row"><span>Nội dung CK</span><b>${transferContent(r)}</b></div>`;
 }
 
-function autoOn() {
-  const a = DATA.auto;
-  return !!(a && a.enabled && a.supabase_url && a.supabase_anon_key);
-}
+function autoOn() { return true; }  // luôn bật (web đọc/kiểm tra qua database)
 
 // Mỗi máy khách + mỗi món có 1 mã đơn ngẫu nhiên (để khớp đúng giao dịch)
 function orderSuffix(r) {
@@ -335,23 +350,10 @@ function transferContent(r) {
   return base;
 }
 
-// Hỏi Supabase: đơn này đã trả tiền chưa? Trả về mã mở khóa nếu đã trả.
+// Hỏi Supabase: đơn này đã trả tiền chưa? Trả về NỘI DUNG công thức nếu đã trả.
 async function checkPaid(r) {
-  const a = DATA.auto;
-  try {
-    const res = await fetch(a.supabase_url.replace(/\/$/, "") + "/rest/v1/rpc/get_unlock_code", {
-      method: "POST",
-      headers: {
-        apikey: a.supabase_anon_key,
-        Authorization: "Bearer " + a.supabase_anon_key,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ p_recipe: r.id, p_order: orderSuffix(r) })
-    });
-    if (!res.ok) return null;
-    const code = await res.json();   // chuỗi mã hoặc null
-    return code || null;
-  } catch (e) { return null; }
+  const content = await sbRpc("claim_recipe", { p_recipe: r.id, p_order: orderSuffix(r), p_code: "" });
+  return content || null;
 }
 
 function stopPolling() {
@@ -361,15 +363,12 @@ function stopPolling() {
 function startPolling(r) {
   stopPolling();
   const tick = async () => {
-    const code = await checkPaid(r);
-    if (!code) return;
-    try {
-      const content = await RecipeCrypto.decrypt(r.locked, code);
-      const map = getUnlocked(); map[r.id] = code; saveUnlocked(map);
-      stopPolling();
-      renderContent(r, content);
-      renderGrid();
-    } catch (e) { /* mã chưa khớp, thử lại lần sau */ }
+    const content = await checkPaid(r);
+    if (!content) return;
+    const map = getUnlocked(); map[r.id] = content; saveUnlocked(map);
+    stopPolling();
+    renderContent(r, content);
+    renderGrid();
   };
   tick();                       // kiểm tra ngay lần đầu
   pollTimer = setInterval(tick, 4000);
@@ -414,7 +413,7 @@ function openModal(id) {
   $("#overlay").classList.add("show");
   document.body.style.overflow = "hidden";
 
-  if (unlocked[r.id]) tryShowContent(r, unlocked[r.id]);
+  if (unlocked[r.id]) renderContent(r, unlocked[r.id]);
   else renderPaywall(r);
 }
 
@@ -459,13 +458,13 @@ function renderPaywall(r) {
     const code = input.value.trim();
     if (!code) { msg.className = "unlock-msg err"; msg.textContent = "Vui lòng nhập mã."; return; }
     btn.disabled = true; msg.className = "unlock-msg"; msg.textContent = "Đang kiểm tra...";
-    try {
-      const content = await RecipeCrypto.decrypt(r.locked, code);
-      const map = getUnlocked(); map[r.id] = code; saveUnlocked(map);
+    const content = await sbRpc("claim_recipe", { p_recipe: r.id, p_order: "", p_code: code });
+    if (content) {
+      const map = getUnlocked(); map[r.id] = content; saveUnlocked(map);
       msg.className = "unlock-msg ok"; msg.textContent = "✓ Mở khóa thành công!";
       renderContent(r, content);
       renderGrid();
-    } catch (e) {
+    } else {
       btn.disabled = false;
       msg.className = "unlock-msg err";
       msg.textContent = "✗ Mã không đúng. Kiểm tra lại hoặc nhắn Zalo để được hỗ trợ.";
@@ -473,15 +472,6 @@ function renderPaywall(r) {
   };
   btn.onclick = go;
   input.onkeydown = e => { if (e.key === "Enter") go(); };
-}
-
-async function tryShowContent(r, code) {
-  try {
-    const content = await RecipeCrypto.decrypt(r.locked, code);
-    renderContent(r, content);
-  } catch (e) {
-    renderPaywall(r); // mã cũ không còn đúng (vd nội dung đã đổi)
-  }
 }
 
 function ytEmbed(url) {

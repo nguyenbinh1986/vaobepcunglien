@@ -13,7 +13,6 @@
   input, textarea, select, button { font-family: inherit; }
   a { color: var(--gold); }
 
-  /* Login */
   #login { min-height:100vh; display:grid; place-items:center; padding:20px; }
   .login-card { background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:34px; width:100%; max-width:360px; text-align:center; }
   .login-card h1 { font-size:22px; margin-bottom:6px; }
@@ -56,7 +55,6 @@
   .recipe-item .code-pill { background:#23291c; color:#bfe06a; border:1px solid #3a4a22; font-size:12px; padding:4px 9px; border-radius:8px; font-weight:600; }
   .recipe-item.locked-warn .code-pill { background:#3a1e1e; color:#ff9b8a; border-color:#5a2b2b; }
 
-  /* Editor modal */
   .ov { position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:50; display:none; align-items:flex-start; justify-content:center; overflow-y:auto; padding:24px 14px; }
   .ov.show { display:flex; }
   .editor { background:var(--panel); border:1px solid var(--line); border-radius:18px; width:100%; max-width:720px; padding:24px; }
@@ -67,10 +65,10 @@
   .toast.show { opacity:1; }
   .toast.err { background:var(--accent); }
   .divider { height:1px; background:var(--line); margin:18px 0; }
-  .badge-locked { font-size:12px; color:#ff9b8a; }
   .secbox { background:var(--panel2); border:1px dashed var(--line); border-radius:12px; padding:16px; }
   .secbox h4 { font-size:14px; margin-bottom:4px; color:var(--gold); }
   .secbox > p { font-size:12px; color:var(--muted); margin-bottom:14px; }
+  .saving { font-size:12px; color:var(--muted); }
 </style>
 </head>
 <body>
@@ -92,13 +90,11 @@
   <div class="topbar">
     <h1><span class="logo">🍲</span> Quản trị · <span id="brandLabel">Bếp Của Vợ</span></h1>
     <div class="actions">
-      <button class="btn ghost sm" id="importBtn">📂 Nạp content.json</button>
+      <span class="saving" id="savingHint"></span>
       <button class="btn ghost sm" id="codesBtn">🔑 Tải bảng mã</button>
-      <button class="btn green" id="exportBtn">💾 Tải content.json</button>
+      <button class="btn ghost sm" id="logoutBtn">🚪 Đăng xuất</button>
     </div>
   </div>
-
-  <input type="file" id="fileInput" accept=".json" style="display:none" />
 
   <!-- Cài đặt chung -->
   <div class="panel">
@@ -128,26 +124,7 @@
       <div class="field"><label>Link Zalo (tuỳ chọn)</label><input type="text" id="p_zalolink" placeholder="https://zalo.me/..." /></div>
     </div>
     <div class="field"><label>Ghi chú thanh toán</label><textarea id="p_note"></textarea></div>
-  </div>
-
-  <!-- Tự động hóa SePay -->
-  <div class="panel">
-    <h2>⚡ Tự động mở khóa (SePay) — tuỳ chọn</h2>
-    <div class="secbox" style="border-style:solid">
-      <p style="font-size:13px;color:var(--muted);margin-bottom:14px">
-        Bật để khách trả tiền là <b>tự mở khóa</b>, không cần gửi mã tay. Cần làm theo file
-        <b>HUONG-DAN-TU-DONG.md</b> (tạo Supabase + bật webhook SePay) rồi dán 2 thông tin dưới đây.
-      </p>
-      <label style="display:flex;gap:9px;align-items:center;margin-bottom:14px;cursor:pointer">
-        <input type="checkbox" id="a_enabled" style="width:auto" /> <span>Bật tự động mở khóa</span>
-      </label>
-      <div class="grid2">
-        <div class="field"><label>Supabase URL</label><input type="text" id="a_url" placeholder="https://xxxx.supabase.co" /></div>
-        <div class="field"><label>Supabase anon key (công khai, an toàn)</label><input type="text" id="a_anon" placeholder="eyJ..." /></div>
-      </div>
-      <button class="btn ghost sm" id="codesSqlBtn">🗄️ Tải file nạp mã cho Supabase (recipe_codes.sql)</button>
-      <div class="hint">Dán file này vào Supabase → SQL Editor → Run, mỗi khi thêm/đổi món hoặc đổi giá.</div>
-    </div>
+    <div style="text-align:right"><button class="btn green sm" id="saveCfgBtn">💾 Lưu cài đặt</button></div>
   </div>
 
   <!-- Danh sách món -->
@@ -161,7 +138,7 @@
   </div>
 
   <p style="color:var(--muted);font-size:13px;text-align:center">
-    Sau khi sửa xong → bấm <b>💾 Tải content.json</b> → tải <b>🔑 Bảng mã</b> (giữ riêng) → kéo file content.json lên Vercel để cập nhật trang bán.
+    ✨ Mọi thay đổi (thêm / xóa / sửa món, đổi giá, đổi thông tin) <b>tự lưu vào web NGAY</b> — không cần tải file hay thao tác gì thêm.
   </p>
 </div>
 
@@ -169,10 +146,9 @@
 <div class="ov" id="editorOv">
   <div class="editor">
     <h3 id="editorTitle">Thêm món</h3>
-    <input type="hidden" id="e_id_orig" />
     <div class="grid2">
       <div class="field"><label>Tên món *</label><input type="text" id="e_title" /></div>
-      <div class="field"><label>Mã món (ID, tự sinh)</label><input type="text" id="e_id" /></div>
+      <div class="field"><label>Mã món (ID — tự sinh)</label><input type="text" id="e_id" /></div>
     </div>
     <div class="grid3">
       <div class="field"><label>Nhóm món</label><input type="text" id="e_cat" placeholder="Món nước / Món xào..." /></div>
@@ -185,11 +161,11 @@
       <div class="field"><label>Độ khó</label><input type="text" id="e_diff" placeholder="Dễ" /></div>
       <div class="field"><label>Khẩu phần</label><input type="text" id="e_serv" placeholder="4 người" /></div>
     </div>
-    <div class="field"><label>Giới thiệu ngắn (khách xem được, KHÔNG khóa)</label><textarea id="e_teaser"></textarea></div>
+    <div class="field"><label>Giới thiệu ngắn (khách xem được)</label><textarea id="e_teaser"></textarea></div>
 
     <div class="secbox">
-      <h4>🔒 Nội dung bị khóa (chỉ hiện sau khi khách nhập đúng mã)</h4>
-      <p>Phần này sẽ được mã hóa. Khách không thể xem nếu không có mã mở khóa.</p>
+      <h4>🔒 Nội dung công thức (chỉ hiện sau khi khách trả tiền hoặc nhập đúng mã)</h4>
+      <p>Lưu an toàn trong database — khách không xem được nếu chưa mở khóa.</p>
       <div class="field"><label>Link video hướng dẫn (YouTube...)</label><input type="text" id="e_video" placeholder="https://youtu.be/..." /></div>
       <div class="field"><label>Nguyên liệu — mỗi dòng 1 mục</label><textarea id="e_ing" placeholder="500g xương bò&#10;1 củ hành tây..."></textarea></div>
       <div class="field"><label>Các bước — mỗi dòng 1 bước</label><textarea id="e_steps" placeholder="Chần xương qua nước sôi&#10;Ninh xương 2 tiếng..."></textarea></div>
@@ -199,7 +175,7 @@
         <div style="flex:1"><label>🔑 MÃ MỞ KHÓA của món này *</label><input type="text" id="e_code" placeholder="vd: PHO2026" /></div>
         <button class="btn ghost sm" id="genCodeBtn" type="button">🎲 Tạo mã</button>
       </div>
-      <div class="hint">Đây là mã vợ anh gửi cho khách sau khi nhận được tiền. Mã KHÔNG lưu trong content.json (chỉ có trong "Bảng mã" riêng).</div>
+      <div class="hint">Mã này để gửi tay cho khách khi cần (dự phòng). Khách trả tiền là tự mở, không cần mã.</div>
     </div>
 
     <div class="actions" style="margin-top:20px;justify-content:flex-end">
@@ -211,11 +187,9 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="assets/crypto.js"></script>
 <script>
-const ADMIN_PW = "bep2026";              // ⚠️ ĐỔI mật khẩu này
-const LS_DRAFT = "bcv_admin_draft";      // lưu nháp (gồm cả mã) trên máy vợ anh
 const $ = s => document.querySelector(s);
+const PW = () => sessionStorage.getItem("bcv_admin_pw") || "";
 
 const BANKS = [
   ["970436","Vietcombank (VCB)"],["970407","Techcombank (TCB)"],["970418","BIDV"],
@@ -225,82 +199,76 @@ const BANKS = [
   ["546034","Cake by VPBank"],["963388","Timo"]
 ];
 
-let STATE = defaultState();
+let STATE = { site: {}, payment: {}, recipes: [], secrets: {} };
 
-function defaultState() {
-  return {
-    site: { brand:"Bếp Của Vợ", logo_emoji:"🍲",
-      hero_title:'Nấu ăn ngon mỗi ngày với <span class="hl">công thức chuẩn vị</span>',
-      hero_subtitle:"Mỗi món một video hướng dẫn chi tiết từng bước — làm là thành công.",
-      hero_eyebrow:"👩‍🍳 Công thức chuẩn vị, dễ làm tại nhà",
-      accent_color:"#e8542f", email:"", about:"Chia sẻ những công thức nấu ăn ngon, dễ làm cho gia đình." },
-    payment: { bank_code:"970436", bank_name:"Vietcombank", account_number:"", account_holder:"",
-      zalo:"", zalo_link:"", note:"Sau khi chuyển khoản, vui lòng nhắn Zalo (kèm ảnh chuyển khoản) để nhận MÃ MỞ KHÓA.",
-      qr_image:"" },
-    auto: { enabled:false, supabase_url:"", supabase_anon_key:"" },  // tự động mở khóa qua SePay
-    recipes: []   // mỗi recipe: {id,title,category,emoji,image,price,time,difficulty,servings,teaser,locked:{...}, _code, _plain}
-  };
+/* ---------- API ---------- */
+async function api(action, payload) {
+  const res = await fetch("/api/admin", {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ password: PW(), action, payload })
+  });
+  let data = {}; try { data = await res.json(); } catch {}
+  if (!res.ok) throw new Error(data.error || ("HTTP " + res.status));
+  return data;
+}
+
+async function loadFromServer() {
+  const d = await api("load");
+  const conf = d.config || {};
+  STATE.site = conf.site || { brand:"Bếp Của Vợ", logo_emoji:"🍲", accent_color:"#e8542f" };
+  STATE.payment = conf.payment || { bank_code:"970422" };
+  STATE.recipes = d.recipes || [];
+  STATE.secrets = {};
+  (d.secrets || []).forEach(s => STATE.secrets[s.recipe_id] = { content: s.content || {}, unlock_code: s.unlock_code || "" });
 }
 
 /* ---------- Login ---------- */
 $("#loginBtn").onclick = doLogin;
 $("#pw").onkeydown = e => { if (e.key === "Enter") doLogin(); };
-function doLogin() {
-  if ($("#pw").value === ADMIN_PW) {
-    sessionStorage.setItem("bcv_admin_ok", "1");
-    showApp();
-  } else { $("#loginErr").style.display = "block"; }
+async function doLogin() {
+  sessionStorage.setItem("bcv_admin_pw", $("#pw").value);
+  $("#loginErr").style.display = "none";
+  try { await loadFromServer(); showApp(); }
+  catch (e) {
+    sessionStorage.removeItem("bcv_admin_pw");
+    $("#loginErr").textContent = String(e.message).includes("mật khẩu") ? "Sai mật khẩu" : ("Lỗi: " + e.message);
+    $("#loginErr").style.display = "block";
+  }
 }
-async function showApp() {
+$("#logoutBtn").onclick = () => { sessionStorage.removeItem("bcv_admin_pw"); location.reload(); };
+
+function showApp() {
   $("#login").style.display = "none";
   $("#app").style.display = "block";
   renderBanks();
-  await loadDraft();
   bindSettings();
   renderAll();
 }
-if (sessionStorage.getItem("bcv_admin_ok") === "1") showApp();
-
-/* ---------- Draft persistence ---------- */
-async function loadDraft() {
-  // 1) Có nháp trong trình duyệt này → dùng (giữ cả mã các món đang sửa dở)
-  try {
-    const d = JSON.parse(localStorage.getItem(LS_DRAFT));
-    if (d && d.recipes && d.recipes.length) { STATE = d; return; }
-  } catch {}
-  // 2) Chưa có nháp → NẠP DỮ LIỆU THẬT từ web (để admin không bị trống)
-  try {
-    const res = await fetch("content.json?v=" + Date.now());
-    if (res.ok) {
-      const data = await res.json();
-      if (data && data.recipes) {
-        STATE = Object.assign({ auto: { enabled:false, supabase_url:"", supabase_anon_key:"" } }, data);
-        saveDraft();
-      }
-    }
-  } catch {}
-}
-function saveDraft() { localStorage.setItem(LS_DRAFT, JSON.stringify(STATE)); }
+if (PW()) { loadFromServer().then(showApp).catch(() => sessionStorage.removeItem("bcv_admin_pw")); }
 
 /* ---------- Settings ---------- */
 function renderBanks() {
   $("#p_bankcode").innerHTML = BANKS.map(([c,n]) => `<option value="${c}">${n}</option>`).join("");
 }
+let cfgTimer;
+function queueSaveConfig() { clearTimeout(cfgTimer); $("#savingHint").textContent = "đang lưu…"; cfgTimer = setTimeout(saveConfigNow, 900); }
+async function saveConfigNow() {
+  clearTimeout(cfgTimer);
+  try { await api("save_config", { site: STATE.site, payment: STATE.payment }); $("#savingHint").textContent = "✓ đã lưu"; }
+  catch (e) { $("#savingHint").textContent = ""; toast("Lỗi lưu: " + e.message, true); }
+  setTimeout(() => { if ($("#savingHint").textContent === "✓ đã lưu") $("#savingHint").textContent = ""; }, 1500);
+}
+$("#saveCfgBtn").onclick = saveConfigNow;
+
 function bindSettings() {
   const s = STATE.site, p = STATE.payment;
   $("#s_brand").value = s.brand || ""; $("#s_logo").value = s.logo_emoji || "";
   $("#s_htitle").value = s.hero_title || ""; $("#s_hsub").value = s.hero_subtitle || "";
   $("#s_accent").value = s.accent_color || ""; $("#s_email").value = s.email || "";
-  $("#p_bankcode").value = p.bank_code || "970436"; $("#p_bankname").value = p.bank_name || "";
+  $("#p_bankcode").value = p.bank_code || "970422"; $("#p_bankname").value = p.bank_name || "";
   $("#p_acc").value = p.account_number || ""; $("#p_holder").value = p.account_holder || "";
   $("#p_zalo").value = p.zalo || ""; $("#p_zalolink").value = p.zalo_link || ""; $("#p_note").value = p.note || "";
   $("#brandLabel").textContent = s.brand || "Bếp Của Vợ";
-
-  const a = STATE.auto || (STATE.auto = { enabled:false, supabase_url:"", supabase_anon_key:"" });
-  $("#a_enabled").checked = !!a.enabled; $("#a_url").value = a.supabase_url || ""; $("#a_anon").value = a.supabase_anon_key || "";
-  $("#a_enabled").onchange = e => { STATE.auto.enabled = e.target.checked; saveDraft(); };
-  $("#a_url").oninput = e => { STATE.auto.supabase_url = e.target.value.trim(); saveDraft(); };
-  $("#a_anon").oninput = e => { STATE.auto.supabase_anon_key = e.target.value.trim(); saveDraft(); };
 
   const map = {
     s_brand:["site","brand"], s_logo:["site","logo_emoji"], s_htitle:["site","hero_title"],
@@ -309,39 +277,38 @@ function bindSettings() {
     p_holder:["payment","account_holder"], p_zalo:["payment","zalo"], p_zalolink:["payment","zalo_link"], p_note:["payment","note"]
   };
   Object.entries(map).forEach(([id,[grp,key]]) => {
-    $("#"+id).oninput = e => {
+    const el = $("#"+id);
+    const handler = e => {
       STATE[grp][key] = e.target.value;
       if (id === "s_brand") $("#brandLabel").textContent = e.target.value;
-      saveDraft();
+      queueSaveConfig();
     };
+    el.oninput = handler; el.onchange = handler;
   });
 }
 
 /* ---------- Recipe list ---------- */
 function renderAll() {
-  bindSettings();
   const list = STATE.recipes || [];
   $("#count").textContent = list.length;
   $("#emptyList").style.display = list.length ? "none" : "block";
   $("#recipeList").innerHTML = list.map((r,i) => {
-    // 3 trạng thái: có _code (món mới/vừa sửa) | có locked nhưng không _code (đã trên web) | thiếu cả hai (lỗi)
-    let pill, warn = "";
-    if (r._code) pill = "🔑 " + r._code;
-    else if (r.locked) pill = "✅ Đã trên web";
-    else { pill = "⚠️ CHƯA CÓ MÃ"; warn = "locked-warn"; }
+    const code = (STATE.secrets[r.id] || {}).unlock_code;
+    const pill = code ? ("🔑 " + code) : "⚠️ chưa có mã";
     return `
-    <div class="recipe-item ${warn}">
+    <div class="recipe-item ${code ? "" : "locked-warn"}">
       <div class="ic">${r.emoji || "🍽️"}</div>
       <div class="meta">
-        <b>${r.title}</b>
-        <span>${r.category || "—"} · ${(r.price||0).toLocaleString("vi-VN")}đ</span>
+        <b>${escapeHtml(r.title)}</b>
+        <span>${escapeHtml(r.category || "—")} · ${(r.price||0).toLocaleString("vi-VN")}đ</span>
       </div>
-      <span class="code-pill">${pill}</span>
+      <span class="code-pill">${escapeHtml(pill)}</span>
       <button class="btn ghost sm" onclick="editRecipe(${i})">✏️ Sửa</button>
       <button class="btn danger sm" onclick="delRecipe(${i})">🗑</button>
     </div>`;
   }).join("");
 }
+function escapeHtml(s){ return String(s==null?"":s).replace(/[&<>"]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 
 /* ---------- Editor ---------- */
 let editIndex = -1;
@@ -353,161 +320,91 @@ function genCode() {
   const base = ($("#e_title").value || "MON").toUpperCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^A-Z]/g,"").slice(0,4) || "MON";
   return base + Math.floor(1000 + Math.random()*9000);
 }
-
 $("#addBtn").onclick = () => openEditor(-1);
 $("#genCodeBtn").onclick = () => $("#e_code").value = genCode();
-$("#e_title").oninput = () => { if (editIndex === -1 || !$("#e_id").dataset.touched) $("#e_id").value = slugify($("#e_title").value); };
-$("#e_id").oninput = () => $("#e_id").dataset.touched = "1";
+$("#e_title").oninput = () => { if (editIndex === -1) $("#e_id").value = slugify($("#e_title").value); };
 $("#cancelEdit").onclick = () => $("#editorOv").classList.remove("show");
 
 function openEditor(i) {
   editIndex = i;
   const r = i >= 0 ? STATE.recipes[i] : {};
-  const p = r._plain || {};
+  const sec = i >= 0 ? (STATE.secrets[r.id] || {}) : {};
+  const c = sec.content || {};
   $("#editorTitle").textContent = i >= 0 ? "Sửa món" : "Thêm món";
-  $("#e_id").dataset.touched = i >= 0 ? "1" : "";
-  $("#e_title").value = r.title || ""; $("#e_id").value = r.id || ""; $("#e_id_orig").value = r.id || "";
+  $("#e_title").value = r.title || ""; $("#e_id").value = r.id || "";
+  $("#e_id").readOnly = i >= 0;   // khi sửa, không cho đổi ID
   $("#e_cat").value = r.category || ""; $("#e_emoji").value = r.emoji || "";
   $("#e_price").value = r.price || ""; $("#e_image").value = r.image || "";
   $("#e_time").value = r.time || ""; $("#e_diff").value = r.difficulty || ""; $("#e_serv").value = r.servings || "";
   $("#e_teaser").value = r.teaser || "";
-  $("#e_video").value = p.video || "";
-  $("#e_ing").value = (p.ingredients || []).join("\n");
-  $("#e_steps").value = (p.steps || []).join("\n");
-  $("#e_tips").value = p.tips || "";
-  $("#e_code").value = r._code || "";
+  $("#e_video").value = c.video || "";
+  $("#e_ing").value = (c.ingredients || []).join("\n");
+  $("#e_steps").value = (c.steps || []).join("\n");
+  $("#e_tips").value = c.tips || "";
+  $("#e_code").value = sec.unlock_code || "";
   $("#editorOv").classList.add("show");
 }
-
 window.editRecipe = openEditor;
-window.delRecipe = i => {
-  if (!confirm("Xóa món \"" + STATE.recipes[i].title + "\"?")) return;
-  STATE.recipes.splice(i,1); saveDraft(); renderAll();
-  toast("Đã xóa món");
+
+window.delRecipe = async i => {
+  const r = STATE.recipes[i];
+  if (!confirm('Xóa món "' + r.title + '"? (web sẽ cập nhật ngay)')) return;
+  try {
+    await api("delete_recipe", { id: r.id });
+    STATE.recipes.splice(i,1); delete STATE.secrets[r.id];
+    renderAll(); toast("✓ Đã xóa — web đã cập nhật");
+  } catch (e) { toast("Lỗi: " + e.message, true); }
 };
 
 $("#saveRecipe").onclick = async () => {
+  const btn = $("#saveRecipe");
   const title = $("#e_title").value.trim();
   const code = $("#e_code").value.trim();
   const price = parseInt($("#e_price").value) || 0;
   if (!title) return toast("Nhập tên món", true);
+  if (!code) return toast("Nhập MÃ MỞ KHÓA", true);
 
-  const plain = {
+  const content = {
     video: $("#e_video").value.trim(),
     ingredients: $("#e_ing").value.split("\n").map(x=>x.trim()).filter(Boolean),
     steps: $("#e_steps").value.split("\n").map(x=>x.trim()).filter(Boolean),
     tips: $("#e_tips").value.trim()
   };
-  const hasContent = !!(plain.video || plain.ingredients.length || plain.steps.length || plain.tips);
   const existing = editIndex >= 0 ? STATE.recipes[editIndex] : null;
-
-  let locked, _code, _plain;
-  if (code && hasContent) {
-    // Món MỚI hoặc CẬP NHẬT công thức → mã hóa lại bằng mã
-    try { locked = await RecipeCrypto.encrypt(plain, code); }
-    catch (e) { return toast("Trình duyệt không hỗ trợ mã hóa (cần https/localhost)", true); }
-    _code = code; _plain = plain;
-  } else if (existing && existing.locked && !code && !hasContent) {
-    // Chỉ sửa thông tin ngoài (giá, tên, ảnh, giới thiệu) → GIỮ NGUYÊN công thức cũ
-    locked = existing.locked; _code = existing._code; _plain = existing._plain;
-  } else {
-    return toast("Thêm/sửa CÔNG THỨC: cần nhập đủ nội dung + MÃ MỞ KHÓA. Chỉ sửa giá/tên thì để trống phần khóa.", true);
-  }
-
-  const id = ($("#e_id").value.trim() || slugify(title)) || ("mon-" + Date.now());
+  const id = existing ? existing.id : (($("#e_id").value.trim() || slugify(title)) || ("mon-" + Date.now()));
   const recipe = {
     id, title, category: $("#e_cat").value.trim(), emoji: $("#e_emoji").value.trim(),
     image: $("#e_image").value.trim(), price,
     time: $("#e_time").value.trim(), difficulty: $("#e_diff").value.trim(), servings: $("#e_serv").value.trim(),
     teaser: $("#e_teaser").value.trim(),
-    locked
+    sort: existing ? (existing.sort || 0) : (STATE.recipes.length + 1)
   };
-  if (_code) { recipe._code = _code; recipe._plain = _plain; }  // chỉ dùng trong admin, KHÔNG xuất ra content.json
 
-  if (editIndex >= 0) STATE.recipes[editIndex] = recipe;
-  else STATE.recipes.push(recipe);
-  saveDraft(); renderAll();
-  $("#editorOv").classList.remove("show");
-  toast("✓ Đã lưu món");
+  btn.disabled = true;
+  try {
+    await api("save_recipe", { recipe, secret: { content, unlock_code: code } });
+    STATE.secrets[id] = { content, unlock_code: code };
+    if (existing) STATE.recipes[editIndex] = recipe; else STATE.recipes.push(recipe);
+    renderAll();
+    $("#editorOv").classList.remove("show");
+    toast("✓ Đã lưu — web đã cập nhật");
+  } catch (e) { toast("Lỗi: " + e.message, true); }
+  finally { btn.disabled = false; }
 };
 
-/* ---------- Export ---------- */
-function publicState() {
-  // bỏ _code, _plain trước khi xuất file công khai (anon key được phép công khai)
-  return {
-    site: STATE.site,
-    payment: STATE.payment,
-    auto: STATE.auto || { enabled:false, supabase_url:"", supabase_anon_key:"" },
-    recipes: STATE.recipes.map(r => {
-      const { _code, _plain, ...pub } = r;
-      return pub;
-    })
-  };
-}
-function download(name, text, type="application/json") {
-  const blob = new Blob([text], { type });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob); a.download = name; a.click();
-  URL.revokeObjectURL(a.href);
-}
-$("#exportBtn").onclick = () => {
-  // Mỗi món phải có nội dung đã mã hóa (locked) — món mới thì có _code, món cũ giữ locked sẵn
-  const broken = STATE.recipes.filter(r => !r.locked);
-  if (broken.length) return toast("Có món chưa hoàn tất (chưa mã hóa) — hãy sửa lại", true);
-  if (!STATE.recipes.length) return toast("Chưa có món nào", true);
-  download("content.json", JSON.stringify(publicState(), null, 2));
-  toast("✓ Đã tải content.json — đưa lên web để cập nhật");
-};
-$("#codesSqlBtn").onclick = () => {
-  if (!STATE.recipes.length) return toast("Chưa có món nào", true);
-  const esc = s => String(s).replace(/'/g, "''");
-  // Món mới/đổi công thức (có _code) → nạp cả mã + giá
-  const upserts = STATE.recipes.filter(r => r._code).map(r =>
-    `  ('${esc(r.id)}', '${esc(r._code)}', ${parseInt(r.price) || 0})`);
-  // Món cũ (mã đã ở Supabase) → đồng bộ GIÁ phòng khi đổi giá
-  const priceSync = STATE.recipes.filter(r => !r._code && r.locked).map(r =>
-    `update public.recipe_codes set price = ${parseInt(r.price) || 0} where recipe_id = '${esc(r.id)}';`);
-
-  let sql = "-- Đồng bộ MÃ & GIÁ vào Supabase (dán vào SQL Editor → Run)\n";
-  if (upserts.length) {
-    sql += `insert into public.recipe_codes (recipe_id, unlock_code, price) values\n${upserts.join(",\n")}\n`
-         + `on conflict (recipe_id) do update set unlock_code = excluded.unlock_code, price = excluded.price;\n`;
-  }
-  if (priceSync.length) sql += (upserts.length ? "\n" : "") + priceSync.join("\n") + "\n";
-
-  download("recipe_codes.sql", sql, "text/plain");
-  toast("✓ Đã tải recipe_codes.sql");
-};
+/* ---------- Tải bảng mã (dự phòng) ---------- */
 $("#codesBtn").onclick = () => {
-  const lines = ["BẢNG MÃ MỞ KHÓA — GIỮ RIÊNG, KHÔNG ĐƯA KHÁCH FILE NÀY","="
-    .repeat(48), ""];
-  STATE.recipes.forEach(r => lines.push(`${r.title}  (nội dung CK: CT ${r.id.toUpperCase().replace(/[^A-Z0-9]/g,"")})\n   → MÃ: ${r._code || "(chưa có)"}\n`));
-  download("BANG-MA-MO-KHOA.txt", lines.join("\n"), "text/plain");
-  toast("✓ Đã tải bảng mã (giữ riêng)");
-};
-
-/* ---------- Import existing content.json ---------- */
-$("#importBtn").onclick = () => $("#fileInput").click();
-$("#fileInput").onchange = e => {
-  const f = e.target.files[0]; if (!f) return;
-  const rd = new FileReader();
-  rd.onload = () => {
-    try {
-      const data = JSON.parse(rd.result);
-      // giữ lại _code/_plain từ draft hiện tại nếu id trùng (file công khai không có mã)
-      const idMap = {};
-      (STATE.recipes||[]).forEach(r => idMap[r.id] = r);
-      data.recipes = (data.recipes||[]).map(r => {
-        const prev = idMap[r.id];
-        return prev ? { ...r, _code: prev._code, _plain: prev._plain } : r;
-      });
-      STATE = data;
-      saveDraft(); renderAll();
-      toast("✓ Đã nạp content.json. (Mã mở khóa lấy từ bản nháp trên máy nếu có)");
-    } catch { toast("File không hợp lệ", true); }
-  };
-  rd.readAsText(f);
-  e.target.value = "";
+  const lines = ["BẢNG MÃ MỞ KHÓA — GIỮ RIÊNG", "=".repeat(40), ""];
+  STATE.recipes.forEach(r => {
+    const code = (STATE.secrets[r.id] || {}).unlock_code || "(chưa có)";
+    const ck = "CT " + r.id.toUpperCase().replace(/[^A-Z0-9]/g,"");
+    lines.push(`${r.title}  (nội dung CK: ${ck})\n   → MÃ: ${code}\n`);
+  });
+  const blob = new Blob([lines.join("\n")], { type: "text/plain" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = "BANG-MA-MO-KHOA.txt"; a.click();
+  URL.revokeObjectURL(a.href);
+  toast("✓ Đã tải bảng mã");
 };
 
 /* ---------- Toast ---------- */
