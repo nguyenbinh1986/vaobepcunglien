@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Bếp Của Vợ — Công thức nấu ăn ngon chuẩn vị</title>
+<meta name="description" content="Tuyển tập công thức nấu ăn ngon, dễ làm kèm video hướng dẫn chi tiết từng bước." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #faf6f0;
+    --card: #ffffff;
+    --ink: #2a2118;
+    --muted: #8a7d6c;
+    --line: #ece3d6;
+    --accent: #e8542f;
+    --accent-dark: #c5421f;
+    --gold: #d9a441;
+    --green: #2f9e55;
+    --shadow: 0 10px 30px rgba(60, 40, 20, 0.10);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Be Vietnam Pro", system-ui, sans-serif;
+    background: var(--bg); color: var(--ink); line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  .serif { font-family: "Playfair Display", serif; }
+  .wrap { max-width: 1140px; margin: 0 auto; padding: 0 20px; }
+  a { color: inherit; text-decoration: none; }
+
+  /* Header */
+  header {
+    position: sticky; top: 0; z-index: 30;
+    background: rgba(250, 246, 240, 0.92);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav { display: flex; align-items: center; justify-content: space-between; height: 66px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 20px; }
+  .brand .logo {
+    width: 38px; height: 38px; border-radius: 11px;
+    background: linear-gradient(135deg, var(--accent), var(--gold));
+    display: grid; place-items: center; font-size: 20px;
+  }
+  .nav-cta {
+    background: var(--accent); color: #fff; padding: 9px 18px;
+    border-radius: 999px; font-weight: 600; font-size: 14px;
+  }
+
+  /* Hero */
+  .hero { padding: 64px 0 40px; text-align: center; }
+  .hero .eyebrow {
+    display: inline-block; background: #fff; border: 1px solid var(--line);
+    color: var(--accent); font-weight: 600; font-size: 13px;
+    padding: 6px 14px; border-radius: 999px; margin-bottom: 22px;
+  }
+  .hero h1 { font-size: clamp(34px, 6vw, 58px); line-height: 1.1; margin-bottom: 18px; }
+  .hero h1 .hl { color: var(--accent); }
+  .hero p { font-size: clamp(16px, 2.4vw, 19px); color: var(--muted); max-width: 620px; margin: 0 auto 28px; }
+  .hero .stats { display: flex; gap: 36px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
+  .hero .stat b { display: block; font-size: 26px; color: var(--accent); }
+  .hero .stat span { font-size: 13px; color: var(--muted); }
+
+  /* Filter */
+  .filters { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 34px 0 10px; }
+  .chip {
+    border: 1px solid var(--line); background: #fff; color: var(--ink);
+    padding: 8px 16px; border-radius: 999px; font-size: 14px; font-weight: 500; cursor: pointer;
+    transition: .15s;
+  }
+  .chip.active { background: var(--ink); color: #fff; border-color: var(--ink); }
+
+  /* Grid */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 22px; padding: 28px 0 60px; }
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 18px;
+    overflow: hidden; cursor: pointer; transition: transform .18s, box-shadow .18s;
+    display: flex; flex-direction: column;
+  }
+  .card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+  .thumb { aspect-ratio: 4/3; position: relative; overflow: hidden; background: linear-gradient(135deg, #ffe7d6, #ffd7a8); }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .thumb .emoji { position: absolute; inset: 0; display: grid; place-items: center; font-size: 64px; }
+  .lock-badge {
+    position: absolute; top: 12px; right: 12px; background: rgba(42,33,24,.82); color: #fff;
+    font-size: 12px; font-weight: 600; padding: 5px 11px; border-radius: 999px; display: flex; gap: 5px; align-items: center;
+  }
+  .lock-badge.open { background: var(--green); }
+  .card-body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 8px; flex: 1; }
+  .card-cat { font-size: 12px; color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: .4px; }
+  .card-title { font-size: 19px; font-weight: 700; }
+  .card-teaser { font-size: 14px; color: var(--muted); flex: 1; }
+  .card-meta { display: flex; gap: 14px; font-size: 13px; color: var(--muted); }
+  .card-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
+  .price { font-weight: 800; font-size: 18px; color: var(--accent); }
+  .price small { font-weight: 500; color: var(--muted); font-size: 12px; }
+  .btn-view { background: #fff3ee; color: var(--accent); font-weight: 600; font-size: 13px; padding: 8px 14px; border-radius: 10px; border: 1px solid #ffd8c7; }
+
+  /* Modal */
+  .overlay { position: fixed; inset: 0; background: rgba(30,20,10,.55); backdrop-filter: blur(3px); z-index: 50; display: none; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 30px 16px; }
+  .overlay.show { display: flex; }
+  .modal { background: var(--bg); width: 100%; max-width: 720px; border-radius: 22px; overflow: hidden; box-shadow: 0 30px 80px rgba(0,0,0,.4); animation: pop .2s ease; }
+  @keyframes pop { from { transform: translateY(14px); opacity: 0; } }
+  .modal-hero { position: relative; aspect-ratio: 16/8; background: linear-gradient(135deg, #ffe7d6, #ffd7a8); }
+  .modal-hero img { width: 100%; height: 100%; object-fit: cover; }
+  .modal-hero .emoji { position: absolute; inset: 0; display: grid; place-items: center; font-size: 96px; }
+  .modal-close { position: absolute; top: 14px; right: 14px; width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,.92); border: none; font-size: 20px; cursor: pointer; display: grid; place-items: center; }
+  .modal-body { padding: 24px 26px 30px; }
+  .modal-body h2 { font-size: 28px; margin-bottom: 6px; }
+  .modal-tags { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0 18px; }
+  .tag { background: #fff; border: 1px solid var(--line); font-size: 13px; padding: 5px 12px; border-radius: 999px; color: var(--muted); }
+  .modal-teaser { color: var(--ink); margin-bottom: 22px; }
+
+  /* Lock / paywall */
+  .paywall { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 24px; text-align: center; }
+  .paywall .lock-ic { font-size: 40px; }
+  .paywall h3 { font-size: 20px; margin: 8px 0 4px; }
+  .paywall p { color: var(--muted); font-size: 14px; margin-bottom: 18px; }
+  .pay-grid { display: grid; grid-template-columns: 200px 1fr; gap: 22px; text-align: left; align-items: start; }
+  @media (max-width: 560px) { .pay-grid { grid-template-columns: 1fr; } }
+  .qr-box { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 10px; }
+  .qr-box img { width: 100%; border-radius: 8px; display: block; background: #f3ece1; min-height: 180px; }
+  .pay-info { font-size: 14px; }
+  .pay-info .row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px dashed var(--line); gap: 12px; }
+  .pay-info .row span:first-child { color: var(--muted); }
+  .pay-info .row b { text-align: right; }
+  .pay-note { background: #fff8e9; border: 1px solid #f0e0bd; color: #8a6d2f; font-size: 13px; border-radius: 12px; padding: 12px 14px; margin-top: 16px; }
+  .zalo-btn { display: inline-flex; gap: 8px; align-items: center; background: var(--green); color: #fff; font-weight: 600; padding: 10px 18px; border-radius: 11px; margin-top: 14px; font-size: 14px; }
+
+  .unlock-row { display: flex; gap: 10px; margin-top: 18px; }
+  .unlock-row input { flex: 1; border: 1px solid var(--line); border-radius: 11px; padding: 12px 14px; font-size: 15px; font-family: inherit; outline: none; }
+  .unlock-row input:focus { border-color: var(--accent); }
+  .unlock-row button { background: var(--accent); color: #fff; border: none; font-weight: 700; padding: 0 22px; border-radius: 11px; cursor: pointer; font-size: 15px; }
+  .unlock-row button:disabled { opacity: .6; cursor: wait; }
+  .unlock-msg { font-size: 13px; margin-top: 10px; min-height: 18px; }
+  .unlock-msg.err { color: var(--accent-dark); }
+  .unlock-msg.ok { color: var(--green); }
+  .auto-status { display: flex; gap: 9px; align-items: center; background: #eef6ff; border: 1px solid #cfe3fb; color: #2563a8; font-size: 13px; border-radius: 12px; padding: 12px 14px; margin-top: 16px; }
+  .auto-status .dot { width: 10px; height: 10px; border-radius: 50%; background: #2f9e55; flex: none; animation: blink 1.1s infinite; }
+  @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: .25; } }
+  .unlock-or { font-size: 12px; color: var(--muted); margin-top: 14px; }
+
+  /* Unlocked content */
+  .content h3 { font-size: 18px; margin: 22px 0 10px; display: flex; align-items: center; gap: 8px; }
+  .content ul, .content ol { padding-left: 22px; }
+  .content li { margin-bottom: 6px; }
+  .video-wrap { position: relative; aspect-ratio: 16/9; border-radius: 14px; overflow: hidden; background: #000; margin-top: 8px; }
+  .video-wrap iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  .tips { background: #eefaf0; border: 1px solid #cdeed5; border-radius: 12px; padding: 14px 16px; color: #2c6b41; font-size: 14px; margin-top: 8px; }
+  .unlocked-badge { background: #eefaf0; color: var(--green); border: 1px solid #cdeed5; font-weight: 600; font-size: 13px; padding: 6px 12px; border-radius: 999px; display: inline-flex; gap: 6px; align-items: center; margin-bottom: 6px; }
+
+  footer { background: #2a2118; color: #d9cdbb; padding: 50px 0 40px; margin-top: 30px; }
+  footer .cols { display: flex; flex-wrap: wrap; gap: 40px; justify-content: space-between; }
+  footer h4 { color: #fff; margin-bottom: 12px; font-size: 16px; }
+  footer p, footer a { font-size: 14px; color: #c9bca8; }
+  footer .copy { border-top: 1px solid #463a2c; margin-top: 30px; padding-top: 20px; font-size: 13px; color: #978876; }
+
+  .empty { text-align: center; color: var(--muted); padding: 60px 0; }
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap nav">
+    <a class="brand" href="#"><span class="logo" id="brandLogo">🍲</span><span id="brandName">Bếp Của Vợ</span></a>
+    <a class="nav-cta" href="#mon-an">Xem thực đơn</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <span class="eyebrow" id="heroEyebrow">👩‍🍳 Công thức chuẩn vị, dễ làm tại nhà</span>
+    <h1 id="heroTitle"></h1>
+    <p id="heroSub"></p>
+    <a class="nav-cta" href="#mon-an" style="font-size:15px;padding:12px 24px">Khám phá công thức ↓</a>
+    <div class="stats" id="heroStats"></div>
+  </div>
+</section>
+
+<main class="wrap" id="mon-an">
+  <div class="filters" id="filters"></div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" style="display:none">Chưa có công thức nào. Hãy thêm trong trang quản trị.</div>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div style="max-width:320px">
+        <h4 id="footBrand">Bếp Của Vợ</h4>
+        <p id="footAbout"></p>
+      </div>
+      <div>
+        <h4>Liên hệ</h4>
+        <p id="footContact"></p>
+      </div>
+      <div>
+        <h4>Hướng dẫn mua</h4>
+        <p>1. Chọn món → bấm "Xem công thức"<br/>2. Quét QR chuyển khoản đúng nội dung<br/>3. Nhắn Zalo nhận mã mở khóa<br/>4. Nhập mã → xem công thức + video</p>
+      </div>
+    </div>
+    <div class="copy">© <span id="year"></span> <span id="footBrand2">Bếp Của Vợ</span> · Làm bằng ❤️</div>
+  </div>
+</footer>
+
+<!-- Modal -->
+<div class="overlay" id="overlay">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script src="assets/crypto.js"></script>
+<script>
+const LS_KEY = "bcv_unlocked"; // { recipeId: code }
+let DATA = null;
+let activeCat = "Tất cả";
+let pollTimer = null;          // bộ đếm tự kiểm tra thanh toán (chế độ tự động)
+
+const money = n => (n || 0).toLocaleString("vi-VN") + "đ";
+const $ = s => document.querySelector(s);
+
+function getUnlocked() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY)) || {}; } catch { return {}; }
+}
+function saveUnlocked(map) { localStorage.setItem(LS_KEY, JSON.stringify(map)); }
+
+async function init() {
+  try {
+    const res = await fetch("content.json?v=" + Date.now());
+    DATA = await res.json();
+  } catch (e) {
+    $("#grid").innerHTML = '<div class="empty">Không tải được dữ liệu (content.json).</div>';
+    return;
+  }
+  renderSite();
+  renderFilters();
+  renderGrid();
+}
+
+function renderSite() {
+  const s = DATA.site || {};
+  const p = DATA.payment || {};
+  if (s.accent_color) document.documentElement.style.setProperty("--accent", s.accent_color);
+  $("#brandLogo").textContent = s.logo_emoji || "🍲";
+  $("#brandName").textContent = s.brand || "Bếp Của Vợ";
+  $("#footBrand").textContent = $("#footBrand2").textContent = s.brand || "Bếp Của Vợ";
+  if (s.hero_eyebrow) $("#heroEyebrow").textContent = s.hero_eyebrow;
+  $("#heroTitle").innerHTML = s.hero_title || 'Nấu ăn ngon mỗi ngày với <span class="hl">công thức chuẩn vị</span>';
+  $("#heroSub").textContent = s.hero_subtitle || "Mỗi món một video hướng dẫn chi tiết từng bước — làm là thành công.";
+  $("#footAbout").textContent = s.about || "";
+  $("#footContact").innerHTML =
+    (p.zalo ? "Zalo: " + p.zalo + "<br/>" : "") +
+    (s.email ? "Email: " + s.email : "");
+  $("#year").textContent = new Date().getFullYear();
+
+  const recipes = DATA.recipes || [];
+  const cats = new Set(recipes.map(r => r.category).filter(Boolean));
+  $("#heroStats").innerHTML =
+    `<div class="stat"><b>${recipes.length}</b><span>Công thức</span></div>` +
+    `<div class="stat"><b>${cats.size}</b><span>Nhóm món</span></div>` +
+    `<div class="stat"><b>HD</b><span>Video từng bước</span></div>`;
+}
+
+function renderFilters() {
+  const cats = ["Tất cả", ...new Set((DATA.recipes || []).map(r => r.category).filter(Boolean))];
+  $("#filters").innerHTML = cats.map(c =>
+    `<button class="chip ${c === activeCat ? "active" : ""}" data-cat="${c}">${c}</button>`
+  ).join("");
+  $("#filters").querySelectorAll(".chip").forEach(b =>
+    b.onclick = () => { activeCat = b.dataset.cat; renderFilters(); renderGrid(); }
+  );
+}
+
+function renderGrid() {
+  const unlocked = getUnlocked();
+  let list = DATA.recipes || [];
+  if (activeCat !== "Tất cả") list = list.filter(r => r.category === activeCat);
+  $("#empty").style.display = list.length ? "none" : "block";
+  $("#grid").innerHTML = list.map(r => {
+    const isOpen = !!unlocked[r.id];
+    const thumb = r.image
+      ? `<img src="${r.image}" alt="${r.title}" onerror="this.style.display='none'">`
+      : `<div class="emoji">${r.emoji || "🍽️"}</div>`;
+    return `
+    <article class="card" data-id="${r.id}">
+      <div class="thumb">
+        ${thumb}
+        <div class="lock-badge ${isOpen ? "open" : ""}">${isOpen ? "✓ Đã mở" : "🔒 Khóa"}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-cat">${r.category || ""}</div>
+        <div class="card-title">${r.title}</div>
+        <div class="card-teaser">${r.teaser || ""}</div>
+        <div class="card-meta">${r.time ? "⏱ " + r.time : ""} ${r.difficulty ? "· " + r.difficulty : ""}</div>
+        <div class="card-foot">
+          <div class="price">${isOpen ? '<span style="color:var(--green)">Đã sở hữu</span>' : money(r.price)}</div>
+          <span class="btn-view">${isOpen ? "Xem công thức" : "Mở khóa →"}</span>
+        </div>
+      </div>
+    </article>`;
+  }).join("");
+  $("#grid").querySelectorAll(".card").forEach(c =>
+    c.onclick = () => openModal(c.dataset.id)
+  );
+}
+
+function paymentRows(r) {
+  const p = DATA.payment || {};
+  return `
+    <div class="row"><span>Ngân hàng</span><b>${p.bank_name || "-"}</b></div>
+    <div class="row"><span>Số tài khoản</span><b>${p.account_number || "-"}</b></div>
+    <div class="row"><span>Chủ tài khoản</span><b>${p.account_holder || "-"}</b></div>
+    <div class="row"><span>Số tiền</span><b>${money(r.price)}</b></div>
+    <div class="row"><span>Nội dung CK</span><b>${transferContent(r)}</b></div>`;
+}
+
+function autoOn() {
+  const a = DATA.auto;
+  return !!(a && a.enabled && a.supabase_url && a.supabase_anon_key);
+}
+
+// Mỗi máy khách + mỗi món có 1 mã đơn ngẫu nhiên (để khớp đúng giao dịch)
+function orderSuffix(r) {
+  const k = "bcv_order_" + r.id;
+  let s = localStorage.getItem(k);
+  if (!s) { s = Math.random().toString(36).slice(2, 7).toUpperCase(); localStorage.setItem(k, s); }
+  return s;
+}
+
+function transferContent(r) {
+  // Tránh từ "mua/bán". Dùng mã món để đối soát.
+  let base = "CT " + r.id.toUpperCase().replace(/[^A-Z0-9]/g, "");
+  if (autoOn()) base += " " + orderSuffix(r);   // thêm mã đơn để tự động khớp
+  return base;
+}
+
+// Hỏi Supabase: đơn này đã trả tiền chưa? Trả về mã mở khóa nếu đã trả.
+async function checkPaid(r) {
+  const a = DATA.auto;
+  try {
+    const res = await fetch(a.supabase_url.replace(/\/$/, "") + "/rest/v1/rpc/get_unlock_code", {
+      method: "POST",
+      headers: {
+        apikey: a.supabase_anon_key,
+        Authorization: "Bearer " + a.supabase_anon_key,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ p_recipe: r.id, p_order: orderSuffix(r) })
+    });
+    if (!res.ok) return null;
+    const code = await res.json();   // chuỗi mã hoặc null
+    return code || null;
+  } catch (e) { return null; }
+}
+
+function stopPolling() {
+  if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+}
+
+function startPolling(r) {
+  stopPolling();
+  const tick = async () => {
+    const code = await checkPaid(r);
+    if (!code) return;
+    try {
+      const content = await RecipeCrypto.decrypt(r.locked, code);
+      const map = getUnlocked(); map[r.id] = code; saveUnlocked(map);
+      stopPolling();
+      renderContent(r, content);
+      renderGrid();
+    } catch (e) { /* mã chưa khớp, thử lại lần sau */ }
+  };
+  tick();                       // kiểm tra ngay lần đầu
+  pollTimer = setInterval(tick, 4000);
+}
+
+function qrUrl(r) {
+  const p = DATA.payment || {};
+  if (!p.bank_code || !p.account_number) return p.qr_image || "";
+  const params = new URLSearchParams({
+    amount: r.price || "",
+    addInfo: transferContent(r),
+    accountName: p.account_holder || ""
+  });
+  return `https://img.vietqr.io/image/${p.bank_code}-${p.account_number}-compact2.png?${params}`;
+}
+
+function openModal(id) {
+  stopPolling();
+  const r = (DATA.recipes || []).find(x => x.id === id);
+  if (!r) return;
+  const unlocked = getUnlocked();
+  const heroImg = r.image
+    ? `<img src="${r.image}" alt="${r.title}" onerror="this.style.display='none'">`
+    : `<div class="emoji">${r.emoji || "🍽️"}</div>`;
+
+  $("#modal").innerHTML = `
+    <div class="modal-hero">
+      ${heroImg}
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <h2>${r.title}</h2>
+      <div class="modal-tags">
+        ${r.category ? `<span class="tag">${r.category}</span>` : ""}
+        ${r.time ? `<span class="tag">⏱ ${r.time}</span>` : ""}
+        ${r.difficulty ? `<span class="tag">📊 ${r.difficulty}</span>` : ""}
+        ${r.servings ? `<span class="tag">🍽 ${r.servings}</span>` : ""}
+      </div>
+      <p class="modal-teaser">${r.teaser || ""}</p>
+      <div id="modalGate"></div>
+    </div>`;
+  $("#overlay").classList.add("show");
+  document.body.style.overflow = "hidden";
+
+  if (unlocked[r.id]) tryShowContent(r, unlocked[r.id]);
+  else renderPaywall(r);
+}
+
+function renderPaywall(r) {
+  const p = DATA.payment || {};
+  const qr = qrUrl(r);
+  const zalo = p.zalo_link || (p.zalo ? "https://zalo.me/" + p.zalo.replace(/\D/g, "") : "#");
+  const autoBanner = autoOn()
+    ? `<div class="auto-status" id="autoStatus">
+         <span class="dot"></span> Đang chờ thanh toán… Trang sẽ <b>tự mở khóa</b> ngay khi nhận được tiền (giữ trang này mở).
+       </div>`
+    : "";
+  $("#modalGate").innerHTML = `
+    <div class="paywall">
+      <div class="lock-ic">🔒</div>
+      <h3>Mở khóa công thức + video</h3>
+      <p>Chuyển khoản để nhận công thức chi tiết và video hướng dẫn từng bước.</p>
+      <div class="pay-grid">
+        <div class="qr-box">
+          ${qr ? `<img src="${qr}" alt="QR thanh toán" onerror="this.style.minHeight='0';this.alt='Quét QR / chuyển khoản theo thông tin bên cạnh'">`
+                : `<div style="padding:24px;color:var(--muted);font-size:13px;text-align:center">Chuyển khoản theo thông tin bên cạnh</div>`}
+          <div style="text-align:center;font-size:13px;color:var(--muted);margin-top:8px">Quét mã để chuyển nhanh</div>
+        </div>
+        <div class="pay-info">
+          ${paymentRows(r)}
+          <div class="pay-note">${p.note || "Sau khi chuyển khoản, vui lòng nhắn Zalo (kèm ảnh chuyển khoản) để nhận MÃ MỞ KHÓA."}</div>
+          <a class="zalo-btn" href="${zalo}" target="_blank" rel="noopener">💬 Nhắn Zalo nhận mã</a>
+        </div>
+      </div>
+      ${autoBanner}
+      <div class="unlock-or">${autoOn() ? "Hoặc đã có mã? Nhập tay:" : ""}</div>
+      <div class="unlock-row">
+        <input id="codeInput" placeholder="Nhập mã mở khóa..." autocomplete="off" />
+        <button id="unlockBtn">Mở khóa</button>
+      </div>
+      <div class="unlock-msg" id="unlockMsg"></div>
+    </div>`;
+  if (autoOn()) startPolling(r);
+
+  const input = $("#codeInput"), btn = $("#unlockBtn"), msg = $("#unlockMsg");
+  const go = async () => {
+    const code = input.value.trim();
+    if (!code) { msg.className = "unlock-msg err"; msg.textContent = "Vui lòng nhập mã."; return; }
+    btn.disabled = true; msg.className = "unlock-msg"; msg.textContent = "Đang kiểm tra...";
+    try {
+      const content = await RecipeCrypto.decrypt(r.locked, code);
+      const map = getUnlocked(); map[r.id] = code; saveUnlocked(map);
+      msg.className = "unlock-msg ok"; msg.textContent = "✓ Mở khóa thành công!";
+      renderContent(r, content);
+      renderGrid();
+    } catch (e) {
+      btn.disabled = false;
+      msg.className = "unlock-msg err";
+      msg.textContent = "✗ Mã không đúng. Kiểm tra lại hoặc nhắn Zalo để được hỗ trợ.";
+    }
+  };
+  btn.onclick = go;
+  input.onkeydown = e => { if (e.key === "Enter") go(); };
+}
+
+async function tryShowContent(r, code) {
+  try {
+    const content = await RecipeCrypto.decrypt(r.locked, code);
+    renderContent(r, content);
+  } catch (e) {
+    renderPaywall(r); // mã cũ không còn đúng (vd nội dung đã đổi)
+  }
+}
+
+function ytEmbed(url) {
+  if (!url) return "";
+  let id = "";
+  const m = url.match(/(?:youtu\.be\/|v=|embed\/|shorts\/)([\w-]{11})/);
+  if (m) id = m[1];
+  if (id) return `<div class="video-wrap"><iframe src="https://www.youtube.com/embed/${id}" allowfullscreen loading="lazy"></iframe></div>`;
+  return `<a class="zalo-btn" href="${url}" target="_blank" rel="noopener">▶ Xem video hướng dẫn</a>`;
+}
+
+function renderContent(r, c) {
+  const ing = (c.ingredients || []).map(i => `<li>${i}</li>`).join("");
+  const steps = (c.steps || []).map(s => `<li>${s}</li>`).join("");
+  $("#modalGate").innerHTML = `
+    <div class="content">
+      <span class="unlocked-badge">✓ Đã mở khóa</span>
+      ${c.video ? `<h3>🎬 Video hướng dẫn</h3>${ytEmbed(c.video)}` : ""}
+      ${ing ? `<h3>🧺 Nguyên liệu</h3><ul>${ing}</ul>` : ""}
+      ${steps ? `<h3>👩‍🍳 Cách làm</h3><ol>${steps}</ol>` : ""}
+      ${c.tips ? `<h3>💡 Mẹo nhỏ</h3><div class="tips">${c.tips}</div>` : ""}
+    </div>`;
+}
+
+function closeModal() {
+  stopPolling();
+  $("#overlay").classList.remove("show");
+  document.body.style.overflow = "";
+}
+$("#overlay").onclick = e => { if (e.target.id === "overlay") closeModal(); };
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+
+init();
+</script>
+</body>
+</html>

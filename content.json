@@ -1,0 +1,77 @@
+{
+  "site": {
+    "brand": "Bếp Của Vợ",
+    "logo_emoji": "🍲",
+    "hero_eyebrow": "👩‍🍳 Công thức chuẩn vị, dễ làm tại nhà",
+    "hero_title": "Nấu ăn ngon mỗi ngày với <span class=\"hl\">công thức chuẩn vị</span>",
+    "hero_subtitle": "Mỗi món một video hướng dẫn chi tiết từng bước — làm là thành công, ngon như nhà hàng.",
+    "accent_color": "#e8542f",
+    "email": "bepcuavo@email.com",
+    "about": "Chia sẻ những công thức nấu ăn ngon, dễ làm cho gia đình Việt."
+  },
+  "payment": {
+    "bank_code": "970436",
+    "bank_name": "Vietcombank",
+    "account_number": "1234567890",
+    "account_holder": "NGUYEN VAN A",
+    "zalo": "0900000000",
+    "zalo_link": "",
+    "note": "Sau khi chuyển khoản đúng nội dung, vui lòng nhắn Zalo (kèm ảnh chuyển khoản) để nhận MÃ MỞ KHÓA trong vài phút.",
+    "qr_image": ""
+  },
+  "auto": {
+    "enabled": true,
+    "supabase_url": "https://gozrtreliolqpnallhye.supabase.co",
+    "supabase_anon_key": "sb_publishable_85YdL8vEQbVyNS13Scb0Jw_dR-AFW7m"
+  },
+  "recipes": [
+    {
+      "id": "pho-bo",
+      "title": "Phở Bò Hà Nội",
+      "category": "Món nước",
+      "emoji": "🍜",
+      "price": 30000,
+      "time": "3 giờ",
+      "difficulty": "Trung bình",
+      "servings": "4 người",
+      "teaser": "Nước dùng trong veo, ngọt từ xương, thơm nồng quế hồi — chuẩn vị phở Bắc gia truyền.",
+      "locked": {
+        "salt": "buFSoZsm37f86b+i6tY7xw==",
+        "iv": "tXgHgnsqQmm75bjD",
+        "ct": "utwzcCrAHovy+A0rfm7jzCEEY0G3zI5bZscH3gAjFzyHXu6RIUQxBBV1qGk8SQKgjlJFyr14aPZceAcMeYvIqM7e6/2Lyxhou0qOTrv8lkFwsrTGst+jZcEPGsaG/UQlGuAACF4iCz/DqjeS1/Eks0wM0HDkZSfulzqd/XPqdIL2hxIUMGrF6q+3gUPU6KWWXxMxfgJtkJiY9q4A2fpqKR4HBkCuu7oQt5bkkdhYQiug1CylN4ewDMKtujlovmLxHHmxiKQgtpuerutGJgQzvpmcnjn1JWUxmEhjTcPmewPg5SZBz+ZCgQDFq0yOL0Km9pgi0mb21yk5HgcIeTRWI4GSpl7Ko0/cEZ3VHlcqVqrYprZkVbEWqIaa29NKVXqvP2kmOrHaiwUDFgQHtqfETgQJsDMRHqMIpY62P3PalkgtVO0Los2SlcravwSPMsdIJwYI8f8S1XTN012vOvgqJ/RYGZ2ZZ+VMSOsUEGqEWibNybX+ODtT/N27HJa59UKRRuQushRxO3jpRKb9BztvibNPwL8WYJWSwxW3v3I4KvH32rfXz07N5uYW3YCBMqMUsh7NOrEiqeSlz2mFfr+IKBTtBci4f7WWPkYMbydhMadW0uiw6+rR+gLBUUXTPx+BR+DQ0DljWNpZCQHeBUM3+02L4Pv0q0O9esSjC4YlZIU6bdeUHZ322DxHkpDfvixUugbCbCQqghyjo/GR5LFyA3SCeSqv2RNDXMQI7rPA44fJiGMTBbwSFYN3LYvPYXZkE9rWNUC+z1Nhf3kQSLWOVLLk/jytBXDOE/gW7tz7UO8d+bFYIhdhG3fFmexj/weQEelGxsO/hLElVQsq/fKEXDMQ9xts3+8FY5d7RQ1HejLNWB98Fdn9k+S3u7X7N5GYA82hSri8vYFza3rIC0WG9uE/N/5cOeth5WTZSGwh07dkgFjaeN3nW/NEo07+jT4lQEKDJqA2f50Dqr1JCLooWdn5NvW6Qnk6RmGBE4TFf6q25zr9QJiaCIdkUjsspsadyaSmwQaxpFHTnmA1agGSlJjJZSC9ppk7UVYqZSFs6gkqeuHVJiNmr4GhUb1Ol2ychtxK+BAqh1ETPh1gkolSMA=="
+      }
+    },
+    {
+      "id": "bo-luc-lac",
+      "title": "Bò Lúc Lắc Khoai Tây",
+      "category": "Món xào",
+      "emoji": "🥩",
+      "price": 25000,
+      "time": "30 phút",
+      "difficulty": "Dễ",
+      "servings": "3 người",
+      "teaser": "Thịt bò mềm mọng, áp chảo lửa lớn giữ trọn nước ngọt, ăn kèm khoai tây vàng giòn.",
+      "locked": {
+        "salt": "k4gBsUxDIFdrFOR4MlpAmg==",
+        "iv": "bKJjhc7J479qG7Vy",
+        "ct": "nC0GaRKJvjvmq9EILKTkJ37fU+D5y5rmeuqCA/3Tut561e1YwKY0szkg1T8ymQe2xRqFolzdNUTgChfhIp4sdu3m/m22uxhu/okW14T4q+qYNSBDjNY5rJH6584GRg2gxZ60lhHKNNYjdbUBCC29jbg/QxdOfjPhjNj6uW26so1riE9tX0P0aSbD1PTppuRnFh5jP8iq8cLHeJOqZKnr3eVmC9UX4K7bDV6BWR3qt8QQSEaBrb+z7sSoxiqE6H7eXrEgj2dxJVDEUzFWx0AV+bpUKjDoZtgTuI5ZIjXV7fwJOXd4WiQljUY4Y+JEMgppN3Z2vFM7YQSGX4F1TlAAwwHpx/YrBi8pR6NDWvaSHHHIRFDo1btsLtJBjl2txmjn+Kp2lYY0yo1TkrXfcBixwnT41yLipMsuP1KwnJ5jCEv+IPRBgRqmVoRzvMRIV5jFTJrL4eziXVNZHdgG+8HS60kkVK4zijUtQ9giCGG7dIbb+SrFND2/p1Rq32ZDbmReCqv5JjGMa09vFf/2lPu5PKoke8TCRjO7YkBr6LJQNOPjfwLB9nmgr3wTT9BqQjPXrolr+fohE0y4RnT11JxDv2rcpptMVCumYCnBqqu+kT+lmSSkN4wUSzG73cGPi1Q5pxIjO42qXPjBlqn4QBdmWHvRLsEjnzd6VX+2hhUrBhix172mG6beOQeEdad34x/AdfCqEnELbEMBI8iIfhUDHJm/u7MQ0H5aPl9BRniRwGbzllij/mn2FZ1vG9RghzcuMJvst2ONiY26Y7KlrS9LkcrScbD1xZ1S3HZVme+Umtz5yPB0snM5i9bVSWrErTdWhPGMgcM="
+      }
+    },
+    {
+      "id": "che-khuc-bach",
+      "title": "Chè Khúc Bạch",
+      "category": "Tráng miệng",
+      "emoji": "🍮",
+      "price": 20000,
+      "time": "45 phút",
+      "difficulty": "Dễ",
+      "servings": "4 người",
+      "teaser": "Khối khúc bạch mềm mịn tan trong miệng, nước đường hạnh nhân thanh mát ngày hè.",
+      "locked": {
+        "salt": "G3dLcTLmoey7OSH3/hTbFA==",
+        "iv": "BtODqLWp3t5sbeEU",
+        "ct": "OmIZxZWjqLD6tOgq8VPRqmLi77Yw2JJBdo29jgtVA7bxCZwQ/gPhV7cGwuywmOkOKnCNp2gsbUIUhqRIIPRKXzUe8zgMiStAl8V1YEXXD24pAWhPjZaFP+N8S15wB2lvjBSa0fod/MJjQxgs6Lxy4pscD4k+GW9N5U9dpyzsBWvtP79Jg3f138Bv2LaH4EYfB+TQxl2Ymjq0TnWJQ/z+z5MgPyr0ew5OQacXonxxNdm9BWUIKOUrcEjrmxtFL1BO2syOTZjObuTrryKseTnkyHwqQjCtZW8DWf/TigGL3xmCEr1HS/J3Itx6dbvCF8RsgcVhhpBOL9U+87GcQeZPxCdLbhRlwMPbmPkyIGiyJ3ej9u+ONnRdih4Zebak8JaYaN3oijTGwgVTyTpGq5hLTJGRjW4H98eMzZNlmdeawuefZ0njImJiL3CVGJOY80lsPBzoaq5TqENKZXrUJeHZNILXkRy1btcAbrMPeCKhiSsl3nHndi1bVK5WqtqTqSqpJ5QOuoTadDtKSwcQGpYRSfCw7tvmZPA0zko7RiqRaUxZVvlV9WJiPZ5GrsHyH7G0+7Jl/Hcf+oVLCf5Ogvx984vNutfVeVx6iV/4Tew8R1PqM+jShlr/AFAphsM8qjhROLDJaHDCE23+aoCaTvYb9Evv9YN52j//idQAaytLu7euSkwFb+homlMy2Yr7Nuwm9xkjIfbLCG/hRzZil1RleFL6kB/25z4D/vKDAgaywnK1LfmsblZKkIeqWfHaBiruw5j7wzXtMI7XQrA8UHi9GMonYwKvZVfmkO5DsOBjZ7j/i/GYSQMkshbfZgSmirx7Z/wAGpdWwts="
+      }
+    }
+  ]
+}

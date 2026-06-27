@@ -1,0 +1,9 @@
+# Không đẩy lên các file chứa MÃ MỞ KHÓA (bí mật) — chỉ giữ trên máy
+BANG-MA-MO-KHOA.txt
+recipe_codes.sql
+
+# Rác hệ thống
+node_modules/
+.DS_Store
+Thumbs.db
+*.log

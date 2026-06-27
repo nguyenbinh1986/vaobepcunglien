@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="robots" content="noindex,nofollow" />
+<title>Quản trị · Bếp Của Vợ</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root { --bg:#0f1117; --panel:#181b24; --panel2:#1f2330; --line:#2b3040; --ink:#e8eaf0; --muted:#8b93a7; --accent:#e8542f; --green:#2f9e55; --gold:#d9a441; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family:"Be Vietnam Pro",system-ui,sans-serif; background:var(--bg); color:var(--ink); }
+  input, textarea, select, button { font-family: inherit; }
+  a { color: var(--gold); }
+
+  /* Login */
+  #login { min-height:100vh; display:grid; place-items:center; padding:20px; }
+  .login-card { background:var(--panel); border:1px solid var(--line); border-radius:18px; padding:34px; width:100%; max-width:360px; text-align:center; }
+  .login-card h1 { font-size:22px; margin-bottom:6px; }
+  .login-card p { color:var(--muted); font-size:14px; margin-bottom:20px; }
+
+  .app { display:none; max-width:1080px; margin:0 auto; padding:24px 20px 80px; }
+  .topbar { display:flex; align-items:center; justify-content:space-between; margin-bottom:22px; flex-wrap:wrap; gap:12px; }
+  .topbar h1 { font-size:20px; display:flex; gap:10px; align-items:center; }
+  .topbar .logo { width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--gold));display:grid;place-items:center;font-size:18px; }
+  .actions { display:flex; gap:10px; flex-wrap:wrap; }
+
+  .btn { border:none; border-radius:11px; padding:10px 18px; font-weight:600; font-size:14px; cursor:pointer; display:inline-flex; gap:7px; align-items:center; }
+  .btn.primary { background:var(--accent); color:#fff; }
+  .btn.green { background:var(--green); color:#fff; }
+  .btn.ghost { background:var(--panel2); color:var(--ink); border:1px solid var(--line); }
+  .btn.sm { padding:7px 12px; font-size:13px; }
+  .btn.danger { background:#3a1e1e; color:#ff9b8a; border:1px solid #5a2b2b; }
+  .btn:disabled { opacity:.5; cursor:not-allowed; }
+
+  .panel { background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:22px; margin-bottom:20px; }
+  .panel h2 { font-size:16px; margin-bottom:16px; display:flex; align-items:center; gap:8px; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .grid3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; }
+  @media(max-width:680px){ .grid2,.grid3{grid-template-columns:1fr;} }
+  label { display:block; font-size:13px; color:var(--muted); margin-bottom:6px; font-weight:500; }
+  .field { margin-bottom:14px; }
+  input[type=text], input[type=number], input[type=password], textarea, select {
+    width:100%; background:var(--panel2); border:1px solid var(--line); border-radius:10px;
+    color:var(--ink); padding:11px 13px; font-size:14px; outline:none;
+  }
+  input:focus, textarea:focus, select:focus { border-color:var(--accent); }
+  textarea { resize:vertical; min-height:80px; line-height:1.6; }
+  .hint { font-size:12px; color:var(--muted); margin-top:5px; }
+
+  .recipe-item { background:var(--panel2); border:1px solid var(--line); border-radius:13px; padding:14px 16px; margin-bottom:10px; display:flex; align-items:center; gap:14px; }
+  .recipe-item .ic { font-size:26px; }
+  .recipe-item .meta { flex:1; }
+  .recipe-item .meta b { font-size:15px; }
+  .recipe-item .meta span { display:block; font-size:13px; color:var(--muted); }
+  .recipe-item .code-pill { background:#23291c; color:#bfe06a; border:1px solid #3a4a22; font-size:12px; padding:4px 9px; border-radius:8px; font-weight:600; }
+  .recipe-item.locked-warn .code-pill { background:#3a1e1e; color:#ff9b8a; border-color:#5a2b2b; }
+
+  /* Editor modal */
+  .ov { position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:50; display:none; align-items:flex-start; justify-content:center; overflow-y:auto; padding:24px 14px; }
+  .ov.show { display:flex; }
+  .editor { background:var(--panel); border:1px solid var(--line); border-radius:18px; width:100%; max-width:720px; padding:24px; }
+  .editor h3 { font-size:18px; margin-bottom:18px; }
+  .row-flex { display:flex; gap:10px; align-items:flex-end; }
+
+  .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:var(--green); color:#fff; padding:12px 22px; border-radius:12px; font-weight:600; font-size:14px; z-index:100; opacity:0; transition:.3s; pointer-events:none; }
+  .toast.show { opacity:1; }
+  .toast.err { background:var(--accent); }
+  .divider { height:1px; background:var(--line); margin:18px 0; }
+  .badge-locked { font-size:12px; color:#ff9b8a; }
+  .secbox { background:var(--panel2); border:1px dashed var(--line); border-radius:12px; padding:16px; }
+  .secbox h4 { font-size:14px; margin-bottom:4px; color:var(--gold); }
+  .secbox > p { font-size:12px; color:var(--muted); margin-bottom:14px; }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login">
+  <div class="login-card">
+    <div style="font-size:40px">🔐</div>
+    <h1>Trang quản trị</h1>
+    <p>Nhập mật khẩu để vào</p>
+    <div class="field"><input type="password" id="pw" placeholder="Mật khẩu..." /></div>
+    <button class="btn primary" style="width:100%;justify-content:center" id="loginBtn">Đăng nhập</button>
+    <p id="loginErr" style="color:var(--accent);margin-top:12px;display:none">Sai mật khẩu</p>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app" id="app">
+  <div class="topbar">
+    <h1><span class="logo">🍲</span> Quản trị · <span id="brandLabel">Bếp Của Vợ</span></h1>
+    <div class="actions">
+      <button class="btn ghost sm" id="importBtn">📂 Nạp content.json</button>
+      <button class="btn ghost sm" id="codesBtn">🔑 Tải bảng mã</button>
+      <button class="btn green" id="exportBtn">💾 Tải content.json</button>
+    </div>
+  </div>
+
+  <input type="file" id="fileInput" accept=".json" style="display:none" />
+
+  <!-- Cài đặt chung -->
+  <div class="panel">
+    <h2>⚙️ Thông tin trang & thanh toán</h2>
+    <div class="grid2">
+      <div class="field"><label>Tên thương hiệu</label><input type="text" id="s_brand" /></div>
+      <div class="field"><label>Emoji logo</label><input type="text" id="s_logo" maxlength="4" /></div>
+    </div>
+    <div class="field"><label>Tiêu đề lớn (Hero) — dùng &lt;span class="hl"&gt;...&lt;/span&gt; để tô màu</label><input type="text" id="s_htitle" /></div>
+    <div class="field"><label>Mô tả phụ</label><input type="text" id="s_hsub" /></div>
+    <div class="grid2">
+      <div class="field"><label>Màu nhấn (accent)</label><input type="text" id="s_accent" placeholder="#e8542f" /></div>
+      <div class="field"><label>Email liên hệ</label><input type="text" id="s_email" /></div>
+    </div>
+    <div class="divider"></div>
+    <div class="grid3">
+      <div class="field"><label>Mã ngân hàng (VietQR)</label>
+        <select id="p_bankcode"></select>
+        <div class="hint">Dùng cho QR tự động</div>
+      </div>
+      <div class="field"><label>Tên ngân hàng (hiển thị)</label><input type="text" id="p_bankname" /></div>
+      <div class="field"><label>Số tài khoản</label><input type="text" id="p_acc" /></div>
+    </div>
+    <div class="grid3">
+      <div class="field"><label>Chủ tài khoản (IN HOA)</label><input type="text" id="p_holder" /></div>
+      <div class="field"><label>Số Zalo</label><input type="text" id="p_zalo" /></div>
+      <div class="field"><label>Link Zalo (tuỳ chọn)</label><input type="text" id="p_zalolink" placeholder="https://zalo.me/..." /></div>
+    </div>
+    <div class="field"><label>Ghi chú thanh toán</label><textarea id="p_note"></textarea></div>
+  </div>
+
+  <!-- Tự động hóa SePay -->
+  <div class="panel">
+    <h2>⚡ Tự động mở khóa (SePay) — tuỳ chọn</h2>
+    <div class="secbox" style="border-style:solid">
+      <p style="font-size:13px;color:var(--muted);margin-bottom:14px">
+        Bật để khách trả tiền là <b>tự mở khóa</b>, không cần gửi mã tay. Cần làm theo file
+        <b>HUONG-DAN-TU-DONG.md</b> (tạo Supabase + bật webhook SePay) rồi dán 2 thông tin dưới đây.
+      </p>
+      <label style="display:flex;gap:9px;align-items:center;margin-bottom:14px;cursor:pointer">
+        <input type="checkbox" id="a_enabled" style="width:auto" /> <span>Bật tự động mở khóa</span>
+      </label>
+      <div class="grid2">
+        <div class="field"><label>Supabase URL</label><input type="text" id="a_url" placeholder="https://xxxx.supabase.co" /></div>
+        <div class="field"><label>Supabase anon key (công khai, an toàn)</label><input type="text" id="a_anon" placeholder="eyJ..." /></div>
+      </div>
+      <button class="btn ghost sm" id="codesSqlBtn">🗄️ Tải file nạp mã cho Supabase (recipe_codes.sql)</button>
+      <div class="hint">Dán file này vào Supabase → SQL Editor → Run, mỗi khi thêm/đổi món hoặc đổi giá.</div>
+    </div>
+  </div>
+
+  <!-- Danh sách món -->
+  <div class="panel">
+    <h2 style="justify-content:space-between">
+      <span>🍽️ Danh sách công thức (<span id="count">0</span>)</span>
+      <button class="btn primary sm" id="addBtn">+ Thêm món</button>
+    </h2>
+    <div id="recipeList"></div>
+    <p id="emptyList" style="color:var(--muted);font-size:14px;text-align:center;padding:20px;display:none">Chưa có món nào. Bấm "+ Thêm món".</p>
+  </div>
+
+  <p style="color:var(--muted);font-size:13px;text-align:center">
+    Sau khi sửa xong → bấm <b>💾 Tải content.json</b> → tải <b>🔑 Bảng mã</b> (giữ riêng) → kéo file content.json lên Vercel để cập nhật trang bán.
+  </p>
+</div>
+
+<!-- EDITOR -->
+<div class="ov" id="editorOv">
+  <div class="editor">
+    <h3 id="editorTitle">Thêm món</h3>
+    <input type="hidden" id="e_id_orig" />
+    <div class="grid2">
+      <div class="field"><label>Tên món *</label><input type="text" id="e_title" /></div>
+      <div class="field"><label>Mã món (ID, tự sinh)</label><input type="text" id="e_id" /></div>
+    </div>
+    <div class="grid3">
+      <div class="field"><label>Nhóm món</label><input type="text" id="e_cat" placeholder="Món nước / Món xào..." /></div>
+      <div class="field"><label>Emoji (nếu chưa có ảnh)</label><input type="text" id="e_emoji" maxlength="4" placeholder="🍜" /></div>
+      <div class="field"><label>Giá (đ) *</label><input type="number" id="e_price" /></div>
+    </div>
+    <div class="field"><label>Ảnh món (URL — tuỳ chọn)</label><input type="text" id="e_image" placeholder="https://..." /></div>
+    <div class="grid3">
+      <div class="field"><label>Thời gian</label><input type="text" id="e_time" placeholder="45 phút" /></div>
+      <div class="field"><label>Độ khó</label><input type="text" id="e_diff" placeholder="Dễ" /></div>
+      <div class="field"><label>Khẩu phần</label><input type="text" id="e_serv" placeholder="4 người" /></div>
+    </div>
+    <div class="field"><label>Giới thiệu ngắn (khách xem được, KHÔNG khóa)</label><textarea id="e_teaser"></textarea></div>
+
+    <div class="secbox">
+      <h4>🔒 Nội dung bị khóa (chỉ hiện sau khi khách nhập đúng mã)</h4>
+      <p>Phần này sẽ được mã hóa. Khách không thể xem nếu không có mã mở khóa.</p>
+      <div class="field"><label>Link video hướng dẫn (YouTube...)</label><input type="text" id="e_video" placeholder="https://youtu.be/..." /></div>
+      <div class="field"><label>Nguyên liệu — mỗi dòng 1 mục</label><textarea id="e_ing" placeholder="500g xương bò&#10;1 củ hành tây..."></textarea></div>
+      <div class="field"><label>Các bước — mỗi dòng 1 bước</label><textarea id="e_steps" placeholder="Chần xương qua nước sôi&#10;Ninh xương 2 tiếng..."></textarea></div>
+      <div class="field"><label>Mẹo nhỏ (tuỳ chọn)</label><textarea id="e_tips"></textarea></div>
+      <div class="divider"></div>
+      <div class="row-flex">
+        <div style="flex:1"><label>🔑 MÃ MỞ KHÓA của món này *</label><input type="text" id="e_code" placeholder="vd: PHO2026" /></div>
+        <button class="btn ghost sm" id="genCodeBtn" type="button">🎲 Tạo mã</button>
+      </div>
+      <div class="hint">Đây là mã vợ anh gửi cho khách sau khi nhận được tiền. Mã KHÔNG lưu trong content.json (chỉ có trong "Bảng mã" riêng).</div>
+    </div>
+
+    <div class="actions" style="margin-top:20px;justify-content:flex-end">
+      <button class="btn ghost" id="cancelEdit">Hủy</button>
+      <button class="btn primary" id="saveRecipe">Lưu món</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="assets/crypto.js"></script>
+<script>
+const ADMIN_PW = "bep2026";              // ⚠️ ĐỔI mật khẩu này
+const LS_DRAFT = "bcv_admin_draft";      // lưu nháp (gồm cả mã) trên máy vợ anh
+const $ = s => document.querySelector(s);
+
+const BANKS = [
+  ["970436","Vietcombank (VCB)"],["970407","Techcombank (TCB)"],["970418","BIDV"],
+  ["970405","Agribank"],["970415","VietinBank"],["970422","MB Bank"],["970432","VPBank"],
+  ["970423","TPBank"],["970403","Sacombank"],["970416","ACB"],["970448","OCB"],
+  ["970409","BacABank"],["970426","MSB"],["970454","VietCapitalBank"],["970437","HDBank"],
+  ["546034","Cake by VPBank"],["963388","Timo"]
+];
+
+let STATE = defaultState();
+
+function defaultState() {
+  return {
+    site: { brand:"Bếp Của Vợ", logo_emoji:"🍲",
+      hero_title:'Nấu ăn ngon mỗi ngày với <span class="hl">công thức chuẩn vị</span>',
+      hero_subtitle:"Mỗi món một video hướng dẫn chi tiết từng bước — làm là thành công.",
+      hero_eyebrow:"👩‍🍳 Công thức chuẩn vị, dễ làm tại nhà",
+      accent_color:"#e8542f", email:"", about:"Chia sẻ những công thức nấu ăn ngon, dễ làm cho gia đình." },
+    payment: { bank_code:"970436", bank_name:"Vietcombank", account_number:"", account_holder:"",
+      zalo:"", zalo_link:"", note:"Sau khi chuyển khoản, vui lòng nhắn Zalo (kèm ảnh chuyển khoản) để nhận MÃ MỞ KHÓA.",
+      qr_image:"" },
+    auto: { enabled:false, supabase_url:"", supabase_anon_key:"" },  // tự động mở khóa qua SePay
+    recipes: []   // mỗi recipe: {id,title,category,emoji,image,price,time,difficulty,servings,teaser,locked:{...}, _code, _plain}
+  };
+}
+
+/* ---------- Login ---------- */
+$("#loginBtn").onclick = doLogin;
+$("#pw").onkeydown = e => { if (e.key === "Enter") doLogin(); };
+function doLogin() {
+  if ($("#pw").value === ADMIN_PW) {
+    sessionStorage.setItem("bcv_admin_ok", "1");
+    showApp();
+  } else { $("#loginErr").style.display = "block"; }
+}
+function showApp() {
+  $("#login").style.display = "none";
+  $("#app").style.display = "block";
+  loadDraft();
+  renderBanks();
+  bindSettings();
+  renderAll();
+}
+if (sessionStorage.getItem("bcv_admin_ok") === "1") showApp();
+
+/* ---------- Draft persistence ---------- */
+function loadDraft() {
+  try {
+    const d = JSON.parse(localStorage.getItem(LS_DRAFT));
+    if (d && d.recipes) STATE = d;
+  } catch {}
+}
+function saveDraft() { localStorage.setItem(LS_DRAFT, JSON.stringify(STATE)); }
+
+/* ---------- Settings ---------- */
+function renderBanks() {
+  $("#p_bankcode").innerHTML = BANKS.map(([c,n]) => `<option value="${c}">${n}</option>`).join("");
+}
+function bindSettings() {
+  const s = STATE.site, p = STATE.payment;
+  $("#s_brand").value = s.brand || ""; $("#s_logo").value = s.logo_emoji || "";
+  $("#s_htitle").value = s.hero_title || ""; $("#s_hsub").value = s.hero_subtitle || "";
+  $("#s_accent").value = s.accent_color || ""; $("#s_email").value = s.email || "";
+  $("#p_bankcode").value = p.bank_code || "970436"; $("#p_bankname").value = p.bank_name || "";
+  $("#p_acc").value = p.account_number || ""; $("#p_holder").value = p.account_holder || "";
+  $("#p_zalo").value = p.zalo || ""; $("#p_zalolink").value = p.zalo_link || ""; $("#p_note").value = p.note || "";
+  $("#brandLabel").textContent = s.brand || "Bếp Của Vợ";
+
+  const a = STATE.auto || (STATE.auto = { enabled:false, supabase_url:"", supabase_anon_key:"" });
+  $("#a_enabled").checked = !!a.enabled; $("#a_url").value = a.supabase_url || ""; $("#a_anon").value = a.supabase_anon_key || "";
+  $("#a_enabled").onchange = e => { STATE.auto.enabled = e.target.checked; saveDraft(); };
+  $("#a_url").oninput = e => { STATE.auto.supabase_url = e.target.value.trim(); saveDraft(); };
+  $("#a_anon").oninput = e => { STATE.auto.supabase_anon_key = e.target.value.trim(); saveDraft(); };
+
+  const map = {
+    s_brand:["site","brand"], s_logo:["site","logo_emoji"], s_htitle:["site","hero_title"],
+    s_hsub:["site","hero_subtitle"], s_accent:["site","accent_color"], s_email:["site","email"],
+    p_bankcode:["payment","bank_code"], p_bankname:["payment","bank_name"], p_acc:["payment","account_number"],
+    p_holder:["payment","account_holder"], p_zalo:["payment","zalo"], p_zalolink:["payment","zalo_link"], p_note:["payment","note"]
+  };
+  Object.entries(map).forEach(([id,[grp,key]]) => {
+    $("#"+id).oninput = e => {
+      STATE[grp][key] = e.target.value;
+      if (id === "s_brand") $("#brandLabel").textContent = e.target.value;
+      saveDraft();
+    };
+  });
+}
+
+/* ---------- Recipe list ---------- */
+function renderAll() {
+  bindSettings();
+  const list = STATE.recipes || [];
+  $("#count").textContent = list.length;
+  $("#emptyList").style.display = list.length ? "none" : "block";
+  $("#recipeList").innerHTML = list.map((r,i) => {
+    const hasCode = !!r._code;
+    return `
+    <div class="recipe-item ${hasCode ? "" : "locked-warn"}">
+      <div class="ic">${r.emoji || "🍽️"}</div>
+      <div class="meta">
+        <b>${r.title}</b>
+        <span>${r.category || "—"} · ${(r.price||0).toLocaleString("vi-VN")}đ</span>
+      </div>
+      <span class="code-pill">🔑 ${r._code || "CHƯA CÓ MÃ"}</span>
+      <button class="btn ghost sm" onclick="editRecipe(${i})">✏️ Sửa</button>
+      <button class="btn danger sm" onclick="delRecipe(${i})">🗑</button>
+    </div>`;
+  }).join("");
+}
+
+/* ---------- Editor ---------- */
+let editIndex = -1;
+function slugify(s) {
+  return (s||"").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g,"")
+    .replace(/đ/g,"d").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"").slice(0,40);
+}
+function genCode() {
+  const base = ($("#e_title").value || "MON").toUpperCase().normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/[^A-Z]/g,"").slice(0,4) || "MON";
+  return base + Math.floor(1000 + Math.random()*9000);
+}
+
+$("#addBtn").onclick = () => openEditor(-1);
+$("#genCodeBtn").onclick = () => $("#e_code").value = genCode();
+$("#e_title").oninput = () => { if (editIndex === -1 || !$("#e_id").dataset.touched) $("#e_id").value = slugify($("#e_title").value); };
+$("#e_id").oninput = () => $("#e_id").dataset.touched = "1";
+$("#cancelEdit").onclick = () => $("#editorOv").classList.remove("show");
+
+function openEditor(i) {
+  editIndex = i;
+  const r = i >= 0 ? STATE.recipes[i] : {};
+  const p = r._plain || {};
+  $("#editorTitle").textContent = i >= 0 ? "Sửa món" : "Thêm món";
+  $("#e_id").dataset.touched = i >= 0 ? "1" : "";
+  $("#e_title").value = r.title || ""; $("#e_id").value = r.id || ""; $("#e_id_orig").value = r.id || "";
+  $("#e_cat").value = r.category || ""; $("#e_emoji").value = r.emoji || "";
+  $("#e_price").value = r.price || ""; $("#e_image").value = r.image || "";
+  $("#e_time").value = r.time || ""; $("#e_diff").value = r.difficulty || ""; $("#e_serv").value = r.servings || "";
+  $("#e_teaser").value = r.teaser || "";
+  $("#e_video").value = p.video || "";
+  $("#e_ing").value = (p.ingredients || []).join("\n");
+  $("#e_steps").value = (p.steps || []).join("\n");
+  $("#e_tips").value = p.tips || "";
+  $("#e_code").value = r._code || "";
+  $("#editorOv").classList.add("show");
+}
+
+window.editRecipe = openEditor;
+window.delRecipe = i => {
+  if (!confirm("Xóa món \"" + STATE.recipes[i].title + "\"?")) return;
+  STATE.recipes.splice(i,1); saveDraft(); renderAll();
+  toast("Đã xóa món");
+};
+
+$("#saveRecipe").onclick = async () => {
+  const title = $("#e_title").value.trim();
+  const code = $("#e_code").value.trim();
+  const price = parseInt($("#e_price").value) || 0;
+  if (!title) return toast("Nhập tên món", true);
+  if (!code) return toast("Nhập MÃ MỞ KHÓA", true);
+
+  const plain = {
+    video: $("#e_video").value.trim(),
+    ingredients: $("#e_ing").value.split("\n").map(x=>x.trim()).filter(Boolean),
+    steps: $("#e_steps").value.split("\n").map(x=>x.trim()).filter(Boolean),
+    tips: $("#e_tips").value.trim()
+  };
+
+  let locked;
+  try { locked = await RecipeCrypto.encrypt(plain, code); }
+  catch (e) { return toast("Trình duyệt không hỗ trợ mã hóa (cần https/localhost)", true); }
+
+  const id = ($("#e_id").value.trim() || slugify(title)) || ("mon-" + Date.now());
+  const recipe = {
+    id, title, category: $("#e_cat").value.trim(), emoji: $("#e_emoji").value.trim(),
+    image: $("#e_image").value.trim(), price,
+    time: $("#e_time").value.trim(), difficulty: $("#e_diff").value.trim(), servings: $("#e_serv").value.trim(),
+    teaser: $("#e_teaser").value.trim(),
+    locked,
+    _code: code, _plain: plain   // chỉ dùng trong admin, KHÔNG xuất ra content.json
+  };
+
+  if (editIndex >= 0) STATE.recipes[editIndex] = recipe;
+  else STATE.recipes.push(recipe);
+  saveDraft(); renderAll();
+  $("#editorOv").classList.remove("show");
+  toast("✓ Đã lưu & mã hóa món");
+};
+
+/* ---------- Export ---------- */
+function publicState() {
+  // bỏ _code, _plain trước khi xuất file công khai (anon key được phép công khai)
+  return {
+    site: STATE.site,
+    payment: STATE.payment,
+    auto: STATE.auto || { enabled:false, supabase_url:"", supabase_anon_key:"" },
+    recipes: STATE.recipes.map(r => {
+      const { _code, _plain, ...pub } = r;
+      return pub;
+    })
+  };
+}
+function download(name, text, type="application/json") {
+  const blob = new Blob([text], { type });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob); a.download = name; a.click();
+  URL.revokeObjectURL(a.href);
+}
+$("#exportBtn").onclick = () => {
+  const missing = STATE.recipes.filter(r => !r._code);
+  if (missing.length) return toast("Có món chưa có mã — hãy sửa lại", true);
+  download("content.json", JSON.stringify(publicState(), null, 2));
+  toast("✓ Đã tải content.json — kéo lên Vercel để cập nhật");
+};
+$("#codesSqlBtn").onclick = () => {
+  const missing = STATE.recipes.filter(r => !r._code);
+  if (missing.length) return toast("Có món chưa có mã — hãy sửa lại", true);
+  if (!STATE.recipes.length) return toast("Chưa có món nào", true);
+  const esc = s => String(s).replace(/'/g, "''");
+  const values = STATE.recipes.map(r =>
+    `  ('${esc(r.id)}', '${esc(r._code)}', ${parseInt(r.price) || 0})`
+  ).join(",\n");
+  const sql =
+`-- Nạp mã mở khóa vào Supabase (dán vào SQL Editor rồi Run)
+insert into public.recipe_codes (recipe_id, unlock_code, price) values
+${values}
+on conflict (recipe_id) do update
+  set unlock_code = excluded.unlock_code, price = excluded.price;
+`;
+  download("recipe_codes.sql", sql, "text/plain");
+  toast("✓ Đã tải recipe_codes.sql");
+};
+$("#codesBtn").onclick = () => {
+  const lines = ["BẢNG MÃ MỞ KHÓA — GIỮ RIÊNG, KHÔNG ĐƯA KHÁCH FILE NÀY","="
+    .repeat(48), ""];
+  STATE.recipes.forEach(r => lines.push(`${r.title}  (nội dung CK: CT ${r.id.toUpperCase().replace(/[^A-Z0-9]/g,"")})\n   → MÃ: ${r._code || "(chưa có)"}\n`));
+  download("BANG-MA-MO-KHOA.txt", lines.join("\n"), "text/plain");
+  toast("✓ Đã tải bảng mã (giữ riêng)");
+};
+
+/* ---------- Import existing content.json ---------- */
+$("#importBtn").onclick = () => $("#fileInput").click();
+$("#fileInput").onchange = e => {
+  const f = e.target.files[0]; if (!f) return;
+  const rd = new FileReader();
+  rd.onload = () => {
+    try {
+      const data = JSON.parse(rd.result);
+      // giữ lại _code/_plain từ draft hiện tại nếu id trùng (file công khai không có mã)
+      const idMap = {};
+      (STATE.recipes||[]).forEach(r => idMap[r.id] = r);
+      data.recipes = (data.recipes||[]).map(r => {
+        const prev = idMap[r.id];
+        return prev ? { ...r, _code: prev._code, _plain: prev._plain } : r;
+      });
+      STATE = data;
+      saveDraft(); renderAll();
+      toast("✓ Đã nạp content.json. (Mã mở khóa lấy từ bản nháp trên máy nếu có)");
+    } catch { toast("File không hợp lệ", true); }
+  };
+  rd.readAsText(f);
+  e.target.value = "";
+};
+
+/* ---------- Toast ---------- */
+let toastT;
+function toast(msg, err) {
+  const t = $("#toast"); t.textContent = msg;
+  t.className = "toast show" + (err ? " err" : "");
+  clearTimeout(toastT); toastT = setTimeout(() => t.className = "toast", 2600);
+}
+</script>
+</body>
+</html>
