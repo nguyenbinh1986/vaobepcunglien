@@ -48,6 +48,27 @@ export default async function handler(req, res) {
       const t = await r.text();
       return res.status(500).json({ success: false, error: t });
     }
+
+    // Thông báo Telegram (nếu đã cấu hình) — chỉ báo tiền VÀO
+    const tgToken = process.env.TELEGRAM_BOT_TOKEN;
+    const tgChat = process.env.TELEGRAM_CHAT_ID;
+    if (tgToken && tgChat && (row.transfer_type || "in") === "in") {
+      const amount = Number(row.amount || 0).toLocaleString("vi-VN");
+      const text =
+        "💰 CÓ ĐƠN MỚI!\n\n" +
+        "➕ Số tiền: +" + amount + "đ\n" +
+        "📝 Nội dung: " + (row.content || "-") + "\n" +
+        "🏦 Ngân hàng: " + (row.gateway || "-") + "\n" +
+        "🕒 Thời gian: " + (row.transaction_date || new Date().toLocaleString("vi-VN"));
+      try {
+        await fetch(`https://api.telegram.org/bot${tgToken}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ chat_id: tgChat, text, disable_web_page_preview: true })
+        });
+      } catch (e) { /* không để lỗi Telegram làm hỏng webhook */ }
+    }
+
     // SePay yêu cầu nhận lại {"success": true}
     return res.status(201).json({ success: true });
   } catch (e) {

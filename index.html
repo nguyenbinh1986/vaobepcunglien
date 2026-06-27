@@ -153,6 +153,8 @@
   @media (max-width: 560px) { .pay-grid { grid-template-columns: 1fr; } }
   .qr-box { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 10px; }
   .qr-box img { width: 100%; border-radius: 8px; display: block; background: #f3ece1; min-height: 180px; }
+  .qr-save { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 10px; background: var(--ink); color: #fff; font-weight: 600; font-size: 13px; padding: 10px 12px; border-radius: 10px; cursor: pointer; }
+  .qr-save:active { transform: scale(.98); }
   .pay-info { font-size: 14px; }
   .pay-info .row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed var(--line); gap: 10px; }
   .pay-info .row span:first-child { color: var(--muted); flex: none; }
@@ -575,11 +577,11 @@ function renderPaywall(r) {
         <div class="qr-box">
           ${qr ? `<img src="${qr}" alt="QR thanh toán" onerror="this.style.minHeight='0';this.alt='Quét QR / chuyển khoản theo thông tin bên cạnh'">`
                 : `<div style="padding:24px;color:var(--muted);font-size:13px;text-align:center">Chuyển khoản theo thông tin bên cạnh</div>`}
-          <div style="text-align:center;font-size:13px;color:var(--muted);margin-top:8px">Quét mã để chuyển nhanh</div>
+          ${qr ? `<a class="qr-save" id="qrSave" href="${qr}" download="QR-chuyen-khoan.png" target="_blank" rel="noopener">📥 Lưu ảnh QR (đã có sẵn số tiền + nội dung)</a>` : ""}
         </div>
         <div class="pay-info">
           ${paymentRows(r)}
-          <div class="pay-tip">📱 Dùng 1 điện thoại? Bấm <b>⧉ Chép</b> số TK & nội dung rồi mở app ngân hàng dán vào — khỏi cần quét QR.</div>
+          <div class="pay-tip">📱 <b>Dùng 1 điện thoại?</b> Bấm <b>📥 Lưu ảnh QR</b> → mở app ngân hàng → chọn <b>Quét từ thư viện/ảnh</b> → app tự điền sẵn số tiền & nội dung, khỏi gõ (không lo sai). Hoặc bấm <b>⧉ Chép</b> từng dòng để dán tay.</div>
           <div class="pay-note">${p.note || "Sau khi chuyển khoản đúng nội dung, công thức sẽ TỰ ĐỘNG mở khóa trong giây lát."}</div>
           <a class="zalo-btn" href="${zalo}" target="_blank" rel="noopener">💬 Cần hỗ trợ? Nhắn Zalo</a>
         </div>
@@ -587,6 +589,20 @@ function renderPaywall(r) {
       ${autoBanner}
     </div>`;
   startPolling(r);
+
+  // Nút lưu ảnh QR: thử tải thẳng (1 chạm); nếu bị chặn thì mở ảnh để giữ/lưu
+  const qrSave = $("#qrSave");
+  if (qrSave) qrSave.addEventListener("click", async e => {
+    try {
+      const res = await fetch(qrSave.href, { mode: "cors" });
+      if (!res.ok) return;
+      const blob = await res.blob();
+      e.preventDefault();
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob); a.download = "QR-chuyen-khoan.png"; a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    } catch (_) { /* CORS chặn → để anchor mở ảnh, khách long-press lưu */ }
+  });
 }
 
 function ytEmbed(url) {
