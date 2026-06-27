@@ -124,10 +124,14 @@
   .qr-box { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 10px; }
   .qr-box img { width: 100%; border-radius: 8px; display: block; background: #f3ece1; min-height: 180px; }
   .pay-info { font-size: 14px; }
-  .pay-info .row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px dashed var(--line); gap: 12px; }
-  .pay-info .row span:first-child { color: var(--muted); }
-  .pay-info .row b { text-align: right; }
-  .pay-note { background: #fff8e9; border: 1px solid #f0e0bd; color: #8a6d2f; font-size: 13px; border-radius: 12px; padding: 12px 14px; margin-top: 16px; }
+  .pay-info .row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed var(--line); gap: 10px; }
+  .pay-info .row span:first-child { color: var(--muted); flex: none; }
+  .pay-info .row b { text-align: right; display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  .cbtn { background: var(--accent); color: #fff; border: none; border-radius: 8px; padding: 5px 11px; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+  .cbtn:active { transform: scale(.95); }
+  .cbtn.copied { background: var(--green); }
+  .pay-tip { background: #eef6ff; border: 1px solid #cfe3fb; color: #2563a8; font-size: 13px; border-radius: 11px; padding: 10px 13px; margin-top: 14px; text-align: left; }
+  .pay-note { background: #fff8e9; border: 1px solid #f0e0bd; color: #8a6d2f; font-size: 13px; border-radius: 12px; padding: 12px 14px; margin-top: 14px; }
   .zalo-btn { display: inline-flex; gap: 8px; align-items: center; background: var(--green); color: #fff; font-weight: 600; padding: 10px 18px; border-radius: 11px; margin-top: 14px; font-size: 14px; }
 
   .unlock-row { display: flex; gap: 10px; margin-top: 18px; }
@@ -389,12 +393,15 @@ function renderGrid() {
 
 function paymentRows(r) {
   const p = DATA.payment || {};
+  const cp = v => `<button class="cbtn" data-copy="${String(v).replace(/"/g, "&quot;")}">⧉ Chép</button>`;
+  const amt = r.price || 0;
+  const ck = transferContent(r);
   return `
     <div class="row"><span>Ngân hàng</span><b>${p.bank_name || "-"}</b></div>
-    <div class="row"><span>Số tài khoản</span><b>${p.account_number || "-"}</b></div>
+    <div class="row"><span>Số tài khoản</span><b>${p.account_number || "-"}${p.account_number ? cp(p.account_number) : ""}</b></div>
     <div class="row"><span>Chủ tài khoản</span><b>${p.account_holder || "-"}</b></div>
-    <div class="row"><span>Số tiền</span><b>${money(r.price)}</b></div>
-    <div class="row"><span>Nội dung CK</span><b>${transferContent(r)}</b></div>`;
+    <div class="row"><span>Số tiền</span><b>${money(amt)}${cp(amt)}</b></div>
+    <div class="row"><span>Nội dung CK</span><b>${ck}${cp(ck)}</b></div>`;
 }
 
 function autoOn() { return true; }  // luôn bật (web đọc/kiểm tra qua database)
@@ -512,6 +519,7 @@ function renderPaywall(r) {
         </div>
         <div class="pay-info">
           ${paymentRows(r)}
+          <div class="pay-tip">📱 Dùng 1 điện thoại? Bấm <b>⧉ Chép</b> số TK & nội dung rồi mở app ngân hàng dán vào — khỏi cần quét QR.</div>
           <div class="pay-note">${p.note || "Sau khi chuyển khoản đúng nội dung, công thức sẽ TỰ ĐỘNG mở khóa trong giây lát."}</div>
           <a class="zalo-btn" href="${zalo}" target="_blank" rel="noopener">💬 Cần hỗ trợ? Nhắn Zalo</a>
         </div>
@@ -551,6 +559,23 @@ function closeModal() {
 }
 $("#overlay").onclick = e => { if (e.target.id === "overlay") closeModal(); };
 document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+
+// Nút "Chép" số TK / nội dung CK / số tiền
+document.addEventListener("click", async e => {
+  const b = e.target.closest(".cbtn");
+  if (!b) return;
+  const text = b.getAttribute("data-copy") || "";
+  try { await navigator.clipboard.writeText(text); }
+  catch {
+    const ta = document.createElement("textarea");
+    ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+    document.body.appendChild(ta); ta.focus(); ta.select();
+    try { document.execCommand("copy"); } catch {}
+    ta.remove();
+  }
+  const old = b.textContent; b.classList.add("copied"); b.textContent = "✓ Đã chép";
+  setTimeout(() => { b.textContent = old; b.classList.remove("copied"); }, 1400);
+});
 
 init();
 </script>
