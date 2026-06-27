@@ -19,13 +19,13 @@ const site = {
 };
 
 const payment = {
-  bank_code: "970436",            // Vietcombank (VietQR BIN)
-  bank_name: "Vietcombank",
-  account_number: "1234567890",
-  account_holder: "NGUYEN VAN A",
-  zalo: "0900000000",
-  zalo_link: "",
-  note: "Sau khi chuyển khoản đúng nội dung, vui lòng nhắn Zalo (kèm ảnh chuyển khoản) để nhận MÃ MỞ KHÓA trong vài phút.",
+  bank_code: "970422",            // MBBank (VietQR BIN)
+  bank_name: "MBBank",
+  account_number: "8989268989",
+  account_holder: "PHAN THI KIM LIEN",
+  zalo: "0972410199",
+  zalo_link: "https://zalo.me/0972410199",
+  note: "Sau khi chuyển khoản đúng nội dung, công thức sẽ TỰ ĐỘNG mở khóa trong vài phút. Nếu chờ lâu, vui lòng nhắn Zalo (kèm ảnh chuyển khoản) để được hỗ trợ.",
   qr_image: ""
 };
 

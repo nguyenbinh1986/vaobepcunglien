@@ -10,13 +10,13 @@
     "about": "Chia sẻ những công thức nấu ăn ngon, dễ làm cho gia đình Việt."
   },
   "payment": {
-    "bank_code": "970436",
-    "bank_name": "Vietcombank",
-    "account_number": "1234567890",
-    "account_holder": "NGUYEN VAN A",
-    "zalo": "0900000000",
-    "zalo_link": "",
-    "note": "Sau khi chuyển khoản đúng nội dung, vui lòng nhắn Zalo (kèm ảnh chuyển khoản) để nhận MÃ MỞ KHÓA trong vài phút.",
+    "bank_code": "970422",
+    "bank_name": "MBBank",
+    "account_number": "8989268989",
+    "account_holder": "PHAN THI KIM LIEN",
+    "zalo": "0972410199",
+    "zalo_link": "https://zalo.me/0972410199",
+    "note": "Sau khi chuyển khoản đúng nội dung, công thức sẽ TỰ ĐỘNG mở khóa trong vài phút. Nếu chờ lâu, vui lòng nhắn Zalo (kèm ảnh chuyển khoản) để được hỗ trợ.",
     "qr_image": ""
   },
   "auto": {
@@ -36,9 +36,9 @@
       "servings": "4 người",
       "teaser": "Nước dùng trong veo, ngọt từ xương, thơm nồng quế hồi — chuẩn vị phở Bắc gia truyền.",
       "locked": {
-        "salt": "buFSoZsm37f86b+i6tY7xw==",
-        "iv": "tXgHgnsqQmm75bjD",
-        "ct": "utwzcCrAHovy+A0rfm7jzCEEY0G3zI5bZscH3gAjFzyHXu6RIUQxBBV1qGk8SQKgjlJFyr14aPZceAcMeYvIqM7e6/2Lyxhou0qOTrv8lkFwsrTGst+jZcEPGsaG/UQlGuAACF4iCz/DqjeS1/Eks0wM0HDkZSfulzqd/XPqdIL2hxIUMGrF6q+3gUPU6KWWXxMxfgJtkJiY9q4A2fpqKR4HBkCuu7oQt5bkkdhYQiug1CylN4ewDMKtujlovmLxHHmxiKQgtpuerutGJgQzvpmcnjn1JWUxmEhjTcPmewPg5SZBz+ZCgQDFq0yOL0Km9pgi0mb21yk5HgcIeTRWI4GSpl7Ko0/cEZ3VHlcqVqrYprZkVbEWqIaa29NKVXqvP2kmOrHaiwUDFgQHtqfETgQJsDMRHqMIpY62P3PalkgtVO0Los2SlcravwSPMsdIJwYI8f8S1XTN012vOvgqJ/RYGZ2ZZ+VMSOsUEGqEWibNybX+ODtT/N27HJa59UKRRuQushRxO3jpRKb9BztvibNPwL8WYJWSwxW3v3I4KvH32rfXz07N5uYW3YCBMqMUsh7NOrEiqeSlz2mFfr+IKBTtBci4f7WWPkYMbydhMadW0uiw6+rR+gLBUUXTPx+BR+DQ0DljWNpZCQHeBUM3+02L4Pv0q0O9esSjC4YlZIU6bdeUHZ322DxHkpDfvixUugbCbCQqghyjo/GR5LFyA3SCeSqv2RNDXMQI7rPA44fJiGMTBbwSFYN3LYvPYXZkE9rWNUC+z1Nhf3kQSLWOVLLk/jytBXDOE/gW7tz7UO8d+bFYIhdhG3fFmexj/weQEelGxsO/hLElVQsq/fKEXDMQ9xts3+8FY5d7RQ1HejLNWB98Fdn9k+S3u7X7N5GYA82hSri8vYFza3rIC0WG9uE/N/5cOeth5WTZSGwh07dkgFjaeN3nW/NEo07+jT4lQEKDJqA2f50Dqr1JCLooWdn5NvW6Qnk6RmGBE4TFf6q25zr9QJiaCIdkUjsspsadyaSmwQaxpFHTnmA1agGSlJjJZSC9ppk7UVYqZSFs6gkqeuHVJiNmr4GhUb1Ol2ychtxK+BAqh1ETPh1gkolSMA=="
+        "salt": "86PGAB21Y3aWz8Mk3V1VMw==",
+        "iv": "chvOpQbX3MPBqzrA",
+        "ct": "xIeTVKhS6Ac2NP/L6LbSrPZLIXoeR0dvX4CvkFv3ZLCnLRe3nYpp1IWFjxnc1pXx3lFlutfM6eylbb9XtCHhf9fv5DR5bjJPK8CJV0ICwJY5FMsJVh7M/KqOVCY+gjTsrAXbJRTxKNIT76h4s3gww0WAHwZe5I4dwj5LQvLxqsQQpCiCw/MB7mG0hkgV1xYU/+xH0EQ3m5JoIog078/5YziQoHd7GwBwa1wQ/HwYcYwJDapPK/vtL6ubqRhhGpMZbeIiPZIMmViTXe0+SvckS3p/OgmV3RJek0WJBwEuuRz59ekOiQHXRk/KgzT6XXHAxlLWKSNCnPz++ER7Bzm/Uh/EKc9rhqe5wOHbKXS3Mhl5EbVPJX1XPzTewhBElQ0typhyGOgrTt+8R3nnTOf5f5Tf7Rpia20yMEkXpIZMU4VBKCKCRgoxXr3D+zRtBuZPy0aFEF/zA6RLQFpkrmG+vpo1g3wT5oDOtuyoWMiaoL5datBtCgT0Utn/dAuO0JqbCEiUwhm8OEO8/WuuxKY/KquCmBzKE561dHJl6sXqmHYP7lgMlc0Jm5U2WYNLZbCS+w+dulkJhGAiFTLDMct0MT+phbuk5Uz4L/xAnl/Jow7n7b0e9jkIooAm/vIWZkuchq2W8Oo8woq8zd/bP5Go12N01nNtJjq8nVcS4KVcLSz3ewUVxi0uIqz4eTiiTC6JHpvRhoZpawx7kB09hzVmP0NFBWJ/+58Gg3aJgEF6gdc2EQGj60T4i4YlSdO0k6U2Pl5B4Bfe4pr0tZg7CjWgVlOLKcgHWAqAJ4LMEOOYXy9GMbh01hdV2dPpcbKfUkFS/cXpjKtvKGqnpFD6bKeCmzaSnhtqFbxHTOmXVB4aQY+lbw9qAuWy3Y6MMRDL73WQ+CNy82zDM9nL+h/YhrfrEPbzJcHlMwSUurY9WbswYA+WD0v9jTYBln3VRIHgB930t8u1HUUzD2dcP4lS9SizsiBqur8j5DaUdc9kjVzc8eua/pbWrXzfkcdtRS0+hag8CBiIuWMsccsILAYV+W+9GTqfdNBpRNfcs8wYCPc5PT0jDcBlhOU6brJGJZdX7HUJtAs88Ag8VhWDc3NEIaxJjA=="
       }
     },
     {
@@ -52,9 +52,9 @@
       "servings": "3 người",
       "teaser": "Thịt bò mềm mọng, áp chảo lửa lớn giữ trọn nước ngọt, ăn kèm khoai tây vàng giòn.",
       "locked": {
-        "salt": "k4gBsUxDIFdrFOR4MlpAmg==",
-        "iv": "bKJjhc7J479qG7Vy",
-        "ct": "nC0GaRKJvjvmq9EILKTkJ37fU+D5y5rmeuqCA/3Tut561e1YwKY0szkg1T8ymQe2xRqFolzdNUTgChfhIp4sdu3m/m22uxhu/okW14T4q+qYNSBDjNY5rJH6584GRg2gxZ60lhHKNNYjdbUBCC29jbg/QxdOfjPhjNj6uW26so1riE9tX0P0aSbD1PTppuRnFh5jP8iq8cLHeJOqZKnr3eVmC9UX4K7bDV6BWR3qt8QQSEaBrb+z7sSoxiqE6H7eXrEgj2dxJVDEUzFWx0AV+bpUKjDoZtgTuI5ZIjXV7fwJOXd4WiQljUY4Y+JEMgppN3Z2vFM7YQSGX4F1TlAAwwHpx/YrBi8pR6NDWvaSHHHIRFDo1btsLtJBjl2txmjn+Kp2lYY0yo1TkrXfcBixwnT41yLipMsuP1KwnJ5jCEv+IPRBgRqmVoRzvMRIV5jFTJrL4eziXVNZHdgG+8HS60kkVK4zijUtQ9giCGG7dIbb+SrFND2/p1Rq32ZDbmReCqv5JjGMa09vFf/2lPu5PKoke8TCRjO7YkBr6LJQNOPjfwLB9nmgr3wTT9BqQjPXrolr+fohE0y4RnT11JxDv2rcpptMVCumYCnBqqu+kT+lmSSkN4wUSzG73cGPi1Q5pxIjO42qXPjBlqn4QBdmWHvRLsEjnzd6VX+2hhUrBhix172mG6beOQeEdad34x/AdfCqEnELbEMBI8iIfhUDHJm/u7MQ0H5aPl9BRniRwGbzllij/mn2FZ1vG9RghzcuMJvst2ONiY26Y7KlrS9LkcrScbD1xZ1S3HZVme+Umtz5yPB0snM5i9bVSWrErTdWhPGMgcM="
+        "salt": "ULC3g6I5dryc2YCgbUvlGQ==",
+        "iv": "sb5d2SEPyBesr0jN",
+        "ct": "NaXWlpyrQDeBYzOdwK1aqjcaOjntm0UsgvffeRxZwUPMyucNwxM0c2uTW/oeIygH4HJezil1xQbDYTBgrLPF/zhVLW5u+pXPReugPh0qp5JF5QwlUs3VvclqH0rwC7DEP9fvXlp2DxUpWhW6xoetYGnOD3X9CTID/0oeceEF/FDDzse4KHOnu/up4c6p716mDyGsh23Td8fdyxxBzWOHlwW7HxeFMepjpP+JeRZBjnrdfXcjg1XSGnflQwL0uRVZJ0axiej7RYrh9HNPy2IbAQPzwUPfHBN1yBUTs6JB3SieIg0EbiYxCMlva0HAmL2MmtCcL+9zpB/53UGCclE9i2joqXXDzGBB/HE6u+ulBgySWNKV28Ji7EY/ReajphyohbspXaq0o4xbghz3DNBK2sjplpqlBdgbl76aZR5ftH2bVZ9/6MA0cO9G2LU6yAeecV21TE6/Jnlch7TVtjY7OcIh8uE1lpc/8rVVPFQy3NJZH38ztGY5b9qUl0vSImYJrA/L8PR5Hs/TtiMhltlu2/v50xVu8OtYf4O3yfL/UeC7++oKnk0eJxPaoy+eGUia1itH3sJJ3xNrrBHo4iVvnqLtOFF9xrJqSOg7E/3DI7a4HZEhE2/D8k+pZ96xHDT3lJzUhJXGq4ZwWgiIkkx8hrGLHYahH5uLgE3kw0L5kwGAy7Tm2wbg8OLGbuwCbEXnMdfPFv04Min5T+lKMQr9zD1YCqUtj4Z7BVkGnJMZZ2V1d2wWjHkCCtoZXkgt1p1vQ8z2FqE56Fs+Roegp+dCQqWgDbnXYhJnSav5ZCwyNgFZkR9iGe+hqohf/PfjurCxLvBSrfs="
       }
     },
     {
@@ -68,9 +68,9 @@
       "servings": "4 người",
       "teaser": "Khối khúc bạch mềm mịn tan trong miệng, nước đường hạnh nhân thanh mát ngày hè.",
       "locked": {
-        "salt": "G3dLcTLmoey7OSH3/hTbFA==",
-        "iv": "BtODqLWp3t5sbeEU",
-        "ct": "OmIZxZWjqLD6tOgq8VPRqmLi77Yw2JJBdo29jgtVA7bxCZwQ/gPhV7cGwuywmOkOKnCNp2gsbUIUhqRIIPRKXzUe8zgMiStAl8V1YEXXD24pAWhPjZaFP+N8S15wB2lvjBSa0fod/MJjQxgs6Lxy4pscD4k+GW9N5U9dpyzsBWvtP79Jg3f138Bv2LaH4EYfB+TQxl2Ymjq0TnWJQ/z+z5MgPyr0ew5OQacXonxxNdm9BWUIKOUrcEjrmxtFL1BO2syOTZjObuTrryKseTnkyHwqQjCtZW8DWf/TigGL3xmCEr1HS/J3Itx6dbvCF8RsgcVhhpBOL9U+87GcQeZPxCdLbhRlwMPbmPkyIGiyJ3ej9u+ONnRdih4Zebak8JaYaN3oijTGwgVTyTpGq5hLTJGRjW4H98eMzZNlmdeawuefZ0njImJiL3CVGJOY80lsPBzoaq5TqENKZXrUJeHZNILXkRy1btcAbrMPeCKhiSsl3nHndi1bVK5WqtqTqSqpJ5QOuoTadDtKSwcQGpYRSfCw7tvmZPA0zko7RiqRaUxZVvlV9WJiPZ5GrsHyH7G0+7Jl/Hcf+oVLCf5Ogvx984vNutfVeVx6iV/4Tew8R1PqM+jShlr/AFAphsM8qjhROLDJaHDCE23+aoCaTvYb9Evv9YN52j//idQAaytLu7euSkwFb+homlMy2Yr7Nuwm9xkjIfbLCG/hRzZil1RleFL6kB/25z4D/vKDAgaywnK1LfmsblZKkIeqWfHaBiruw5j7wzXtMI7XQrA8UHi9GMonYwKvZVfmkO5DsOBjZ7j/i/GYSQMkshbfZgSmirx7Z/wAGpdWwts="
+        "salt": "1jRwGC04RPIDcvci1FQrrw==",
+        "iv": "VpWmNaeybicQySZk",
+        "ct": "0466tfPf0cMV/12pH5C73UsAUsbTTFV1mCgyJTnSnkBOqbMD8JYre293bmctH8L8ClyfNzO4ySWH0WIPruGPzdg2QilPHFtcTTajNiu+W4UQIf6BdGT1CnXcymTy3ISbcEQ7SojP8fhOeDjkuAwQ8L/qlXZXcSi496o1Zh/zaOS0HL+D+Df77bGkEOHzVyftKb7pbjEPpOG/oYyMAf/8bqT8xg+MC5zc8f39BXqxl1AK5bccd45rTvA7Uw61MDWkZkvfsp4h87kl/ewsLrcy8qI6ZlSsrIzm2F+VDAQ22XPuUyHT/5ZcYOYbGsCil7PuUCR7XsP+bxo887S09n7GK6rAzFgkk9WTmrroNoW6joatevhqp7enLfJ1VM+PFuGO+4YUJnSyNSyueW2KoF88WNplv71fv+2vFVMqLp6UopD/micw2wudkvyZSg2ulv0tzk4JL7tJyZBgcTXGsEcZNNW4RvpRRTwrGXrutThgWqcP55E9x5I64t92qNwbUDFwC3SnOCwQ6Y5EsfD/7cQcNltocNWRPOi/TaXqU+aBSn8Iyc570TgVxUo4OKnIwAszkn08Qe3u+//8YJdo7VjiGRCglQtTEEf+lBQAOkZUUVm3+jNLXAhiACfF1F2hpb0r/3aERrHgTwx6clzEyGQLvByy++077hWd32Xrf8hIw0+XEd0acwmB48hW3n9z4UQpOaFj55HlLTfxJi9IIxuxyvuQVg8fgkx8+Z4nGNqFbZCcFKr38URwRCHVX6a+/o6TJDfeLEJxtWIDGU23FCjxpKky64fMgXiHGHqG5nHHLuLcyGVRYoHCtts3EUZgAnx2JuivbunkK28="
       }
     }
   ]
