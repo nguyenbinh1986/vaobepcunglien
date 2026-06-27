@@ -11,6 +11,16 @@ export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
   const { password, action, payload } = req.body || {};
+
+  // Kiểm tra biến môi trường đã nạp chưa (không lộ giá trị, chỉ true/false)
+  if (action === "envcheck") {
+    return res.json({
+      has_admin_password: !!process.env.ADMIN_PASSWORD,
+      has_supabase_url: !!process.env.SUPABASE_URL,
+      has_service_key: !!process.env.SUPABASE_SERVICE_KEY
+    });
+  }
+
   if (!process.env.ADMIN_PASSWORD || password !== process.env.ADMIN_PASSWORD) {
     return res.status(401).json({ error: "Sai mật khẩu" });
   }
