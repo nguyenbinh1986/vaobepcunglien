@@ -159,6 +159,23 @@
   footer .copy { border-top: 1px solid #463a2c; margin-top: 30px; padding-top: 20px; font-size: 13px; color: #978876; }
 
   .empty { text-align: center; color: var(--muted); padding: 60px 0; }
+
+  /* Social */
+  .social-band { background: #fff; border-top: 1px solid var(--line); padding: 40px 0; text-align: center; }
+  .social-band h3 { font-size: clamp(20px, 3vw, 26px); margin-bottom: 6px; }
+  .social-band .sub { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
+  .soc-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .soc { display: inline-flex; align-items: center; gap: 8px; padding: 11px 20px; border-radius: 999px; color: #fff; font-weight: 600; font-size: 14px; transition: transform .15s, box-shadow .15s; }
+  .soc:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,.15); }
+  .soc svg { width: 20px; height: 20px; }
+  .soc.fb { background: #1877f2; }
+  .soc.tt { background: #111; }
+  .soc.yt { background: #ff0000; }
+  .soc.ig { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
+  .foot-soc { display: flex; gap: 10px; margin-top: 14px; }
+  .foot-soc a { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: #463a2c; color: #fff; }
+  .foot-soc a:hover { background: var(--accent); }
+  .foot-soc svg { width: 18px; height: 18px; }
 </style>
 </head>
 <body>
@@ -185,12 +202,22 @@
   <div class="empty" id="empty" style="display:none">Chưa có công thức nào. Hãy thêm trong trang quản trị.</div>
 </main>
 
+<!-- Social band -->
+<section class="social-band" id="socialBand" style="display:none">
+  <div class="wrap">
+    <h3 id="socialTitle">Theo dõi Bếp Của Vợ</h3>
+    <p class="sub" id="socialSub">Cùng vào bếp mỗi ngày — mẹo nấu ăn, món mới, livestream hằng tuần</p>
+    <div class="soc-row" id="socialBtns"></div>
+  </div>
+</section>
+
 <footer>
   <div class="wrap">
     <div class="cols">
       <div style="max-width:320px">
         <h4 id="footBrand">Bếp Của Vợ</h4>
         <p id="footAbout"></p>
+        <div class="foot-soc" id="footSoc"></div>
       </div>
       <div>
         <h4>Liên hệ</h4>
@@ -198,7 +225,7 @@
       </div>
       <div>
         <h4>Hướng dẫn mua</h4>
-        <p>1. Chọn món → bấm "Xem công thức"<br/>2. Quét QR chuyển khoản đúng nội dung<br/>3. Nhắn Zalo nhận mã mở khóa<br/>4. Nhập mã → xem công thức + video</p>
+        <p>1. Chọn món → bấm "Xem công thức"<br/>2. Quét QR chuyển khoản đúng nội dung<br/>3. Công thức + video <b>tự mở khóa</b> sau vài giây</p>
       </div>
     </div>
     <div class="copy">© <span id="year"></span> <span id="footBrand2">Bếp Của Vợ</span> · Làm bằng ❤️</div>
@@ -263,6 +290,7 @@ function renderSite() {
   $("#brandLogo").textContent = s.logo_emoji || "🍲";
   $("#brandName").textContent = s.brand || "Bếp Của Vợ";
   $("#footBrand").textContent = $("#footBrand2").textContent = s.brand || "Bếp Của Vợ";
+  $("#socialTitle").textContent = "Theo dõi " + (s.brand || "Bếp Của Vợ");
   if (s.hero_eyebrow) $("#heroEyebrow").textContent = s.hero_eyebrow;
   $("#heroTitle").innerHTML = s.hero_title || 'Nấu ăn ngon mỗi ngày với <span class="hl">công thức chuẩn vị</span>';
   $("#heroSub").textContent = s.hero_subtitle || "Mỗi món một video hướng dẫn chi tiết từng bước — làm là thành công.";
@@ -278,6 +306,37 @@ function renderSite() {
     `<div class="stat"><b>${recipes.length}</b><span>Công thức</span></div>` +
     `<div class="stat"><b>${cats.size}</b><span>Nhóm món</span></div>` +
     `<div class="stat"><b>HD</b><span>Video từng bước</span></div>`;
+  renderSocial();
+}
+
+const SOC_SVG = {
+  facebook: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 22v-8h2.6l.5-3.3h-3.1V8.6c0-.9.3-1.6 1.7-1.6h1.5V4.1C16.5 4 15.6 3.9 14.5 3.9c-2.4 0-4 1.4-4 4.1v2.7H7.7V14h2.8v8h3z"/></svg>',
+  tiktok: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 3c.3 2 1.6 3.6 3.4 3.9v2.7c-1.3 0-2.5-.4-3.5-1v6.2A5.7 5.7 0 1110.8 9c.3 0 .6 0 .9.1v2.8a2.9 2.9 0 102 2.7V3h2.9z"/></svg>',
+  youtube: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M23 7.6s-.2-1.6-.9-2.3c-.8-.9-1.8-.9-2.2-1C16.8 4 12 4 12 4s-4.8 0-7.9.3c-.4 0-1.4 0-2.2 1C1.2 6 1 7.6 1 7.6S.8 9.4.8 11.3v1.4c0 1.9.2 3.7.2 3.7s.2 1.6.9 2.3c.8.9 1.9.8 2.4.9 1.7.2 7.7.2 7.7.2s4.8 0 7.9-.3c.4 0 1.4 0 2.2-1 .7-.7.9-2.3.9-2.3s.2-1.8.2-3.7v-1.4c0-1.9-.2-3.7-.2-3.7zM9.8 14.6V9l5 2.8-5 2.8z"/></svg>',
+  instagram: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5.5"/><circle cx="12" cy="12" r="4"/><circle cx="17.4" cy="6.6" r="1.1" fill="currentColor" stroke="none"/></svg>'
+};
+
+function socialList() {
+  const s = DATA.site || {};
+  return [
+    { k:"facebook", cls:"fb", label:"Facebook", url:s.facebook },
+    { k:"tiktok", cls:"tt", label:"TikTok", url:s.tiktok },
+    { k:"youtube", cls:"yt", label:"YouTube", url:s.youtube },
+    { k:"instagram", cls:"ig", label:"Instagram", url:s.instagram }
+  ].filter(x => x.url && x.url.trim());
+}
+
+function renderSocial() {
+  const list = socialList();
+  const band = $("#socialBand");
+  if (!list.length) { band.style.display = "none"; $("#footSoc").innerHTML = ""; return; }
+  band.style.display = "";
+  $("#socialBtns").innerHTML = list.map(l =>
+    `<a class="soc ${l.cls}" href="${l.url}" target="_blank" rel="noopener">${SOC_SVG[l.k]}<span>${l.label}</span></a>`
+  ).join("");
+  $("#footSoc").innerHTML = list.map(l =>
+    `<a href="${l.url}" target="_blank" rel="noopener" title="${l.label}">${SOC_SVG[l.k]}</a>`
+  ).join("");
 }
 
 function renderFilters() {

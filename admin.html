@@ -124,6 +124,16 @@
       <div class="field"><label>Link Zalo (tuỳ chọn)</label><input type="text" id="p_zalolink" placeholder="https://zalo.me/..." /></div>
     </div>
     <div class="field"><label>Ghi chú thanh toán</label><textarea id="p_note"></textarea></div>
+    <div class="divider"></div>
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px">🔗 Mạng xã hội (để trống ô nào thì ẩn nút đó trên web)</p>
+    <div class="grid2">
+      <div class="field"><label>Facebook (link trang/profile)</label><input type="text" id="s_facebook" placeholder="https://facebook.com/..." /></div>
+      <div class="field"><label>TikTok</label><input type="text" id="s_tiktok" placeholder="https://tiktok.com/@..." /></div>
+    </div>
+    <div class="grid2">
+      <div class="field"><label>YouTube</label><input type="text" id="s_youtube" placeholder="https://youtube.com/@..." /></div>
+      <div class="field"><label>Instagram</label><input type="text" id="s_instagram" placeholder="https://instagram.com/..." /></div>
+    </div>
     <div style="text-align:right"><button class="btn green sm" id="saveCfgBtn">💾 Lưu cài đặt</button></div>
   </div>
 
@@ -268,11 +278,14 @@ function bindSettings() {
   $("#p_bankcode").value = p.bank_code || "970422"; $("#p_bankname").value = p.bank_name || "";
   $("#p_acc").value = p.account_number || ""; $("#p_holder").value = p.account_holder || "";
   $("#p_zalo").value = p.zalo || ""; $("#p_zalolink").value = p.zalo_link || ""; $("#p_note").value = p.note || "";
+  $("#s_facebook").value = s.facebook || ""; $("#s_tiktok").value = s.tiktok || "";
+  $("#s_youtube").value = s.youtube || ""; $("#s_instagram").value = s.instagram || "";
   $("#brandLabel").textContent = s.brand || "Bếp Của Vợ";
 
   const map = {
     s_brand:["site","brand"], s_logo:["site","logo_emoji"], s_htitle:["site","hero_title"],
     s_hsub:["site","hero_subtitle"], s_accent:["site","accent_color"], s_email:["site","email"],
+    s_facebook:["site","facebook"], s_tiktok:["site","tiktok"], s_youtube:["site","youtube"], s_instagram:["site","instagram"],
     p_bankcode:["payment","bank_code"], p_bankname:["payment","bank_name"], p_acc:["payment","account_number"],
     p_holder:["payment","account_holder"], p_zalo:["payment","zalo"], p_zalolink:["payment","zalo_link"], p_note:["payment","note"]
   };
