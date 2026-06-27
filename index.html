@@ -439,39 +439,13 @@ function renderPaywall(r) {
         </div>
         <div class="pay-info">
           ${paymentRows(r)}
-          <div class="pay-note">${p.note || "Sau khi chuyển khoản, vui lòng nhắn Zalo (kèm ảnh chuyển khoản) để nhận MÃ MỞ KHÓA."}</div>
-          <a class="zalo-btn" href="${zalo}" target="_blank" rel="noopener">💬 Nhắn Zalo nhận mã</a>
+          <div class="pay-note">${p.note || "Sau khi chuyển khoản đúng nội dung, công thức sẽ TỰ ĐỘNG mở khóa trong giây lát."}</div>
+          <a class="zalo-btn" href="${zalo}" target="_blank" rel="noopener">💬 Cần hỗ trợ? Nhắn Zalo</a>
         </div>
       </div>
       ${autoBanner}
-      <div class="unlock-or">${autoOn() ? "Hoặc đã có mã? Nhập tay:" : ""}</div>
-      <div class="unlock-row">
-        <input id="codeInput" placeholder="Nhập mã mở khóa..." autocomplete="off" />
-        <button id="unlockBtn">Mở khóa</button>
-      </div>
-      <div class="unlock-msg" id="unlockMsg"></div>
     </div>`;
-  if (autoOn()) startPolling(r);
-
-  const input = $("#codeInput"), btn = $("#unlockBtn"), msg = $("#unlockMsg");
-  const go = async () => {
-    const code = input.value.trim();
-    if (!code) { msg.className = "unlock-msg err"; msg.textContent = "Vui lòng nhập mã."; return; }
-    btn.disabled = true; msg.className = "unlock-msg"; msg.textContent = "Đang kiểm tra...";
-    const content = await sbRpc("claim_recipe", { p_recipe: r.id, p_order: "", p_code: code });
-    if (content) {
-      const map = getUnlocked(); map[r.id] = content; saveUnlocked(map);
-      msg.className = "unlock-msg ok"; msg.textContent = "✓ Mở khóa thành công!";
-      renderContent(r, content);
-      renderGrid();
-    } else {
-      btn.disabled = false;
-      msg.className = "unlock-msg err";
-      msg.textContent = "✗ Mã không đúng. Kiểm tra lại hoặc nhắn Zalo để được hỗ trợ.";
-    }
-  };
-  btn.onclick = go;
-  input.onkeydown = e => { if (e.key === "Enter") go(); };
+  startPolling(r);
 }
 
 function ytEmbed(url) {
