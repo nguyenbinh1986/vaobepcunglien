@@ -251,21 +251,33 @@ function doLogin() {
     showApp();
   } else { $("#loginErr").style.display = "block"; }
 }
-function showApp() {
+async function showApp() {
   $("#login").style.display = "none";
   $("#app").style.display = "block";
-  loadDraft();
   renderBanks();
+  await loadDraft();
   bindSettings();
   renderAll();
 }
 if (sessionStorage.getItem("bcv_admin_ok") === "1") showApp();
 
 /* ---------- Draft persistence ---------- */
-function loadDraft() {
+async function loadDraft() {
+  // 1) Có nháp trong trình duyệt này → dùng (giữ cả mã các món đang sửa dở)
   try {
     const d = JSON.parse(localStorage.getItem(LS_DRAFT));
-    if (d && d.recipes) STATE = d;
+    if (d && d.recipes && d.recipes.length) { STATE = d; return; }
+  } catch {}
+  // 2) Chưa có nháp → NẠP DỮ LIỆU THẬT từ web (để admin không bị trống)
+  try {
+    const res = await fetch("content.json?v=" + Date.now());
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.recipes) {
+        STATE = Object.assign({ auto: { enabled:false, supabase_url:"", supabase_anon_key:"" } }, data);
+        saveDraft();
+      }
+    }
   } catch {}
 }
 function saveDraft() { localStorage.setItem(LS_DRAFT, JSON.stringify(STATE)); }
@@ -312,15 +324,19 @@ function renderAll() {
   $("#count").textContent = list.length;
   $("#emptyList").style.display = list.length ? "none" : "block";
   $("#recipeList").innerHTML = list.map((r,i) => {
-    const hasCode = !!r._code;
+    // 3 trạng thái: có _code (món mới/vừa sửa) | có locked nhưng không _code (đã trên web) | thiếu cả hai (lỗi)
+    let pill, warn = "";
+    if (r._code) pill = "🔑 " + r._code;
+    else if (r.locked) pill = "✅ Đã trên web";
+    else { pill = "⚠️ CHƯA CÓ MÃ"; warn = "locked-warn"; }
     return `
-    <div class="recipe-item ${hasCode ? "" : "locked-warn"}">
+    <div class="recipe-item ${warn}">
       <div class="ic">${r.emoji || "🍽️"}</div>
       <div class="meta">
         <b>${r.title}</b>
         <span>${r.category || "—"} · ${(r.price||0).toLocaleString("vi-VN")}đ</span>
       </div>
-      <span class="code-pill">🔑 ${r._code || "CHƯA CÓ MÃ"}</span>
+      <span class="code-pill">${pill}</span>
       <button class="btn ghost sm" onclick="editRecipe(${i})">✏️ Sửa</button>
       <button class="btn danger sm" onclick="delRecipe(${i})">🗑</button>
     </div>`;
@@ -375,7 +391,6 @@ $("#saveRecipe").onclick = async () => {
   const code = $("#e_code").value.trim();
   const price = parseInt($("#e_price").value) || 0;
   if (!title) return toast("Nhập tên món", true);
-  if (!code) return toast("Nhập MÃ MỞ KHÓA", true);
 
   const plain = {
     video: $("#e_video").value.trim(),
@@ -383,10 +398,21 @@ $("#saveRecipe").onclick = async () => {
     steps: $("#e_steps").value.split("\n").map(x=>x.trim()).filter(Boolean),
     tips: $("#e_tips").value.trim()
   };
+  const hasContent = !!(plain.video || plain.ingredients.length || plain.steps.length || plain.tips);
+  const existing = editIndex >= 0 ? STATE.recipes[editIndex] : null;
 
-  let locked;
-  try { locked = await RecipeCrypto.encrypt(plain, code); }
-  catch (e) { return toast("Trình duyệt không hỗ trợ mã hóa (cần https/localhost)", true); }
+  let locked, _code, _plain;
+  if (code && hasContent) {
+    // Món MỚI hoặc CẬP NHẬT công thức → mã hóa lại bằng mã
+    try { locked = await RecipeCrypto.encrypt(plain, code); }
+    catch (e) { return toast("Trình duyệt không hỗ trợ mã hóa (cần https/localhost)", true); }
+    _code = code; _plain = plain;
+  } else if (existing && existing.locked && !code && !hasContent) {
+    // Chỉ sửa thông tin ngoài (giá, tên, ảnh, giới thiệu) → GIỮ NGUYÊN công thức cũ
+    locked = existing.locked; _code = existing._code; _plain = existing._plain;
+  } else {
+    return toast("Thêm/sửa CÔNG THỨC: cần nhập đủ nội dung + MÃ MỞ KHÓA. Chỉ sửa giá/tên thì để trống phần khóa.", true);
+  }
 
   const id = ($("#e_id").value.trim() || slugify(title)) || ("mon-" + Date.now());
   const recipe = {
@@ -394,15 +420,15 @@ $("#saveRecipe").onclick = async () => {
     image: $("#e_image").value.trim(), price,
     time: $("#e_time").value.trim(), difficulty: $("#e_diff").value.trim(), servings: $("#e_serv").value.trim(),
     teaser: $("#e_teaser").value.trim(),
-    locked,
-    _code: code, _plain: plain   // chỉ dùng trong admin, KHÔNG xuất ra content.json
+    locked
   };
+  if (_code) { recipe._code = _code; recipe._plain = _plain; }  // chỉ dùng trong admin, KHÔNG xuất ra content.json
 
   if (editIndex >= 0) STATE.recipes[editIndex] = recipe;
   else STATE.recipes.push(recipe);
   saveDraft(); renderAll();
   $("#editorOv").classList.remove("show");
-  toast("✓ Đã lưu & mã hóa món");
+  toast("✓ Đã lưu món");
 };
 
 /* ---------- Export ---------- */
@@ -425,17 +451,19 @@ function download(name, text, type="application/json") {
   URL.revokeObjectURL(a.href);
 }
 $("#exportBtn").onclick = () => {
-  const missing = STATE.recipes.filter(r => !r._code);
-  if (missing.length) return toast("Có món chưa có mã — hãy sửa lại", true);
+  // Mỗi món phải có nội dung đã mã hóa (locked) — món mới thì có _code, món cũ giữ locked sẵn
+  const broken = STATE.recipes.filter(r => !r.locked);
+  if (broken.length) return toast("Có món chưa hoàn tất (chưa mã hóa) — hãy sửa lại", true);
+  if (!STATE.recipes.length) return toast("Chưa có món nào", true);
   download("content.json", JSON.stringify(publicState(), null, 2));
-  toast("✓ Đã tải content.json — kéo lên Vercel để cập nhật");
+  toast("✓ Đã tải content.json — đưa lên web để cập nhật");
 };
 $("#codesSqlBtn").onclick = () => {
-  const missing = STATE.recipes.filter(r => !r._code);
-  if (missing.length) return toast("Có món chưa có mã — hãy sửa lại", true);
-  if (!STATE.recipes.length) return toast("Chưa có món nào", true);
+  // Chỉ nạp mã cho món MỚI / VỪA SỬA (có _code). Món cũ đã có mã trong Supabase rồi.
+  const withCode = STATE.recipes.filter(r => r._code);
+  if (!withCode.length) return toast("Không có món mới nào cần nạp mã", true);
   const esc = s => String(s).replace(/'/g, "''");
-  const values = STATE.recipes.map(r =>
+  const values = withCode.map(r =>
     `  ('${esc(r.id)}', '${esc(r._code)}', ${parseInt(r.price) || 0})`
   ).join(",\n");
   const sql =
@@ -446,7 +474,7 @@ on conflict (recipe_id) do update
   set unlock_code = excluded.unlock_code, price = excluded.price;
 `;
   download("recipe_codes.sql", sql, "text/plain");
-  toast("✓ Đã tải recipe_codes.sql");
+  toast("✓ Đã tải recipe_codes.sql (" + withCode.length + " món mới)");
 };
 $("#codesBtn").onclick = () => {
   const lines = ["BẢNG MÃ MỞ KHÓA — GIỮ RIÊNG, KHÔNG ĐƯA KHÁCH FILE NÀY","="
