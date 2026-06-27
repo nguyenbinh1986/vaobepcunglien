@@ -251,6 +251,7 @@ const LS_KEY = "bcv_unlocked"; // { recipeId: <nội dung công thức đã mở
 let DATA = null;
 let activeCat = "Tất cả";
 let pollTimer = null;          // bộ đếm tự kiểm tra thanh toán
+let currentRecipeId = null;    // món đang mở (để cập nhật nội dung mới nhất)
 
 const money = n => (n || 0).toLocaleString("vi-VN") + "đ";
 const $ = s => document.querySelector(s);
@@ -452,6 +453,7 @@ function openModal(id) {
   stopPolling();
   const r = (DATA.recipes || []).find(x => x.id === id);
   if (!r) return;
+  currentRecipeId = id;
   const unlocked = getUnlocked();
   const heroImg = r.image
     ? `<img src="${r.image}" alt="${r.title}" onerror="this.style.display='none'">`
@@ -476,8 +478,16 @@ function openModal(id) {
   $("#overlay").classList.add("show");
   document.body.style.overflow = "hidden";
 
-  if (unlocked[r.id]) renderContent(r, unlocked[r.id]);
+  if (unlocked[r.id]) { renderContent(r, unlocked[r.id]); refreshContent(r); }
   else renderPaywall(r);
+}
+
+// Lấy nội dung MỚI NHẤT từ database (phòng khi vợ vừa sửa/thêm ảnh)
+async function refreshContent(r) {
+  const fresh = await sbRpc("claim_recipe", { p_recipe: r.id, p_order: orderSuffix(r), p_code: "" });
+  if (!fresh) return;
+  const map = getUnlocked(); map[r.id] = fresh; saveUnlocked(map);
+  if (currentRecipeId === r.id && $("#overlay").classList.contains("show")) renderContent(r, fresh);
 }
 
 function renderPaywall(r) {
