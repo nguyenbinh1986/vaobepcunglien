@@ -459,22 +459,24 @@ $("#exportBtn").onclick = () => {
   toast("✓ Đã tải content.json — đưa lên web để cập nhật");
 };
 $("#codesSqlBtn").onclick = () => {
-  // Chỉ nạp mã cho món MỚI / VỪA SỬA (có _code). Món cũ đã có mã trong Supabase rồi.
-  const withCode = STATE.recipes.filter(r => r._code);
-  if (!withCode.length) return toast("Không có món mới nào cần nạp mã", true);
+  if (!STATE.recipes.length) return toast("Chưa có món nào", true);
   const esc = s => String(s).replace(/'/g, "''");
-  const values = withCode.map(r =>
-    `  ('${esc(r.id)}', '${esc(r._code)}', ${parseInt(r.price) || 0})`
-  ).join(",\n");
-  const sql =
-`-- Nạp mã mở khóa vào Supabase (dán vào SQL Editor rồi Run)
-insert into public.recipe_codes (recipe_id, unlock_code, price) values
-${values}
-on conflict (recipe_id) do update
-  set unlock_code = excluded.unlock_code, price = excluded.price;
-`;
+  // Món mới/đổi công thức (có _code) → nạp cả mã + giá
+  const upserts = STATE.recipes.filter(r => r._code).map(r =>
+    `  ('${esc(r.id)}', '${esc(r._code)}', ${parseInt(r.price) || 0})`);
+  // Món cũ (mã đã ở Supabase) → đồng bộ GIÁ phòng khi đổi giá
+  const priceSync = STATE.recipes.filter(r => !r._code && r.locked).map(r =>
+    `update public.recipe_codes set price = ${parseInt(r.price) || 0} where recipe_id = '${esc(r.id)}';`);
+
+  let sql = "-- Đồng bộ MÃ & GIÁ vào Supabase (dán vào SQL Editor → Run)\n";
+  if (upserts.length) {
+    sql += `insert into public.recipe_codes (recipe_id, unlock_code, price) values\n${upserts.join(",\n")}\n`
+         + `on conflict (recipe_id) do update set unlock_code = excluded.unlock_code, price = excluded.price;\n`;
+  }
+  if (priceSync.length) sql += (upserts.length ? "\n" : "") + priceSync.join("\n") + "\n";
+
   download("recipe_codes.sql", sql, "text/plain");
-  toast("✓ Đã tải recipe_codes.sql (" + withCode.length + " món mới)");
+  toast("✓ Đã tải recipe_codes.sql");
 };
 $("#codesBtn").onclick = () => {
   const lines = ["BẢNG MÃ MỞ KHÓA — GIỮ RIÊNG, KHÔNG ĐƯA KHÁCH FILE NÀY","="
