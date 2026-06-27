@@ -69,6 +69,25 @@ export default async function handler(req, res) {
       return res.json({ success: true });
     }
 
+    if (action === "upload_image") {
+      // payload: { data: dataURL/base64, ext }
+      const raw = payload.data || "";
+      const mime = (raw.match(/^data:(image\/[a-z]+);base64,/) || [])[1] || "image/jpeg";
+      const b64 = raw.includes(",") ? raw.split(",")[1] : raw;
+      const buf = Buffer.from(b64, "base64");
+      if (buf.length > 5 * 1024 * 1024) return res.status(413).json({ error: "Ảnh quá lớn (>5MB)" });
+      const ext = mime === "image/png" ? "png" : (mime === "image/webp" ? "webp" : "jpg");
+      const path = Date.now() + "-" + Math.random().toString(36).slice(2, 9) + "." + ext;
+      const r = await fetch(`${process.env.SUPABASE_URL.replace(/\/$/, "")}/storage/v1/object/recipe-images/${path}`, {
+        method: "POST",
+        headers: { apikey: KEY, Authorization: `Bearer ${KEY}`, "Content-Type": mime, "cache-control": "max-age=31536000" },
+        body: buf
+      });
+      if (!r.ok) return res.status(500).json({ error: "upload: " + (await r.text()) });
+      const url = `${process.env.SUPABASE_URL.replace(/\/$/, "")}/storage/v1/object/public/recipe-images/${path}`;
+      return res.json({ url });
+    }
+
     return res.status(400).json({ error: "Hành động không hợp lệ" });
   } catch (e) {
     return res.status(500).json({ error: String(e) });

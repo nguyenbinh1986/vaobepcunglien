@@ -69,6 +69,13 @@
   .secbox h4 { font-size:14px; margin-bottom:4px; color:var(--gold); }
   .secbox > p { font-size:12px; color:var(--muted); margin-bottom:14px; }
   .saving { font-size:12px; color:var(--muted); }
+  .img-grid { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px; }
+  .img-grid .thumb { position:relative; width:84px; height:84px; border-radius:9px; overflow:hidden; border:1px solid var(--line); background:var(--panel2); }
+  .img-grid .thumb img { width:100%; height:100%; object-fit:cover; display:block; }
+  .img-grid .thumb .rm { position:absolute; top:3px; right:3px; width:20px; height:20px; border-radius:50%; background:rgba(0,0,0,.65); color:#fff; border:none; cursor:pointer; font-size:11px; line-height:1; display:grid; place-items:center; }
+  .img-grid .thumb .ord { position:absolute; bottom:2px; left:3px; background:rgba(0,0,0,.6); color:#fff; font-size:10px; padding:1px 5px; border-radius:6px; }
+  .img-upload-btn { display:inline-flex; align-items:center; gap:6px; background:var(--panel); border:1px dashed var(--line); border-radius:10px; padding:9px 16px; cursor:pointer; font-size:13px; color:var(--gold); font-weight:600; }
+  .img-uploading { font-size:12px; color:var(--gold); margin-top:8px; display:none; }
 </style>
 </head>
 <body>
@@ -176,7 +183,15 @@
     <div class="secbox">
       <h4>🔒 Nội dung công thức (chỉ hiện sau khi khách trả tiền hoặc nhập đúng mã)</h4>
       <p>Lưu an toàn trong database — khách không xem được nếu chưa mở khóa.</p>
-      <div class="field"><label>Link video hướng dẫn (YouTube...)</label><input type="text" id="e_video" placeholder="https://youtu.be/..." /></div>
+      <div class="field"><label>Link video hướng dẫn (YouTube — tuỳ chọn)</label><input type="text" id="e_video" placeholder="https://youtu.be/..." /></div>
+      <div class="field">
+        <label>📸 Ảnh minh họa các bước (thêm nhiều ảnh — tuỳ chọn)</label>
+        <div id="e_imgs" class="img-grid"></div>
+        <label class="img-upload-btn" for="e_imgfile">＋ Tải ảnh lên</label>
+        <input type="file" id="e_imgfile" accept="image/*" multiple style="display:none" />
+        <div class="img-uploading" id="e_imguploading">⏳ Đang tải ảnh lên...</div>
+        <div class="hint">Tải ảnh từ máy/điện thoại (ảnh tự nén cho nhẹ). Ảnh hiện theo thứ tự tải lên.</div>
+      </div>
       <div class="field"><label>Nguyên liệu — mỗi dòng 1 mục</label><textarea id="e_ing" placeholder="500g xương bò&#10;1 củ hành tây..."></textarea></div>
       <div class="field"><label>Các bước — mỗi dòng 1 bước</label><textarea id="e_steps" placeholder="Chần xương qua nước sôi&#10;Ninh xương 2 tiếng..."></textarea></div>
       <div class="field"><label>Mẹo nhỏ (tuỳ chọn)</label><textarea id="e_tips"></textarea></div>
@@ -338,6 +353,47 @@ $("#genCodeBtn").onclick = () => $("#e_code").value = genCode();
 $("#e_title").oninput = () => { if (editIndex === -1) $("#e_id").value = slugify($("#e_title").value); };
 $("#cancelEdit").onclick = () => $("#editorOv").classList.remove("show");
 
+/* ---------- Ảnh minh họa ---------- */
+let editorImages = [];
+function renderEditorImages() {
+  $("#e_imgs").innerHTML = editorImages.map((u,i) =>
+    `<div class="thumb"><img src="${u}"><span class="ord">${i+1}</span><button type="button" class="rm" onclick="rmImg(${i})">✕</button></div>`
+  ).join("");
+}
+window.rmImg = i => { editorImages.splice(i,1); renderEditorImages(); };
+
+function compressImage(file, maxW=1280, quality=0.75) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        let w = img.width, h = img.height;
+        if (w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+        const c = document.createElement("canvas"); c.width = w; c.height = h;
+        c.getContext("2d").drawImage(img, 0, 0, w, h);
+        resolve(c.toDataURL("image/jpeg", quality));
+      };
+      img.onerror = reject; img.src = reader.result;
+    };
+    reader.onerror = reject; reader.readAsDataURL(file);
+  });
+}
+
+$("#e_imgfile").onchange = async e => {
+  const files = [...e.target.files]; e.target.value = "";
+  if (!files.length) return;
+  $("#e_imguploading").style.display = "block";
+  for (const f of files) {
+    try {
+      const data = await compressImage(f);
+      const r = await api("upload_image", { data });
+      editorImages.push(r.url); renderEditorImages();
+    } catch (err) { toast("Lỗi tải ảnh: " + (err.message || err), true); }
+  }
+  $("#e_imguploading").style.display = "none";
+};
+
 function openEditor(i) {
   editIndex = i;
   const r = i >= 0 ? STATE.recipes[i] : {};
@@ -355,6 +411,7 @@ function openEditor(i) {
   $("#e_steps").value = (c.steps || []).join("\n");
   $("#e_tips").value = c.tips || "";
   $("#e_code").value = sec.unlock_code || "";
+  editorImages = (c.images || []).slice(); renderEditorImages();
   $("#editorOv").classList.add("show");
 }
 window.editRecipe = openEditor;
@@ -379,6 +436,7 @@ $("#saveRecipe").onclick = async () => {
 
   const content = {
     video: $("#e_video").value.trim(),
+    images: editorImages.slice(),
     ingredients: $("#e_ing").value.split("\n").map(x=>x.trim()).filter(Boolean),
     steps: $("#e_steps").value.split("\n").map(x=>x.trim()).filter(Boolean),
     tips: $("#e_tips").value.trim()
