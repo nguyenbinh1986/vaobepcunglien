@@ -144,6 +144,36 @@
     <div style="text-align:right"><button class="btn green sm" id="saveCfgBtn">💾 Lưu cài đặt</button></div>
   </div>
 
+  <!-- SEO & nội dung hiển thị -->
+  <div class="panel">
+    <h2>🔎 SEO &amp; Nội dung hiển thị <span style="font-weight:400;color:var(--muted);font-size:13px">(giúp lên Google + nói trúng khách)</span></h2>
+    <div class="field"><label>Tiêu đề SEO (hiện trên Google &amp; tab trình duyệt)</label><input type="text" id="s_seotitle" placeholder="Công thức nấu ăn để kinh doanh đồ ăn vặt — dễ làm, bán chạy | Bếp Của Liên" /></div>
+    <div class="field"><label>Mô tả SEO (đoạn dưới tiêu đề trên Google — nên ~150 ký tự)</label><textarea id="s_seodesc" placeholder="Học công thức chuẩn vị để kinh doanh đồ ăn vặt, bán online tại nhà..."></textarea></div>
+    <div class="field"><label>Từ khóa (cách nhau bởi dấu phẩy)</label><textarea id="s_seokw" placeholder="công thức kinh doanh, đồ ăn vặt bán chạy, công thức bán hàng..."></textarea></div>
+    <div class="field">
+      <label>Ảnh chia sẻ (hiện khi đăng link lên Facebook/Zalo — nên ngang 1200×630)</label>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <img id="og_preview" alt="" style="display:none;width:170px;height:90px;object-fit:cover;border-radius:8px;border:1px solid var(--line)" />
+        <label class="img-upload-btn" for="og_file">＋ Tải ảnh chia sẻ</label>
+        <input type="file" id="og_file" accept="image/*" style="display:none" />
+        <span class="img-uploading" id="og_uploading">⏳ Đang tải...</span>
+      </div>
+      <input type="text" id="s_ogimage" placeholder="hoặc dán link ảnh https://..." style="margin-top:8px" />
+      <div class="hint">⚠️ Sau khi đổi ảnh chia sẻ, báo Bình deploy lại 1 lần để Facebook nhận ảnh mới.</div>
+    </div>
+    <div class="divider"></div>
+    <div class="grid2">
+      <div class="field"><label>Dòng nhỏ trên tiêu đề (eyebrow)</label><input type="text" id="s_eyebrow" placeholder="👩‍🍳 Công thức chuẩn vị để kinh doanh" /></div>
+      <div class="field"><label>Chữ nút lớn (CTA)</label><input type="text" id="s_herocta" placeholder="Khám phá công thức ↓" /></div>
+    </div>
+    <div class="field"><label>Giới thiệu (chân trang)</label><textarea id="s_about"></textarea></div>
+    <div class="grid2">
+      <div class="field"><label>Phụ đề mục mạng xã hội</label><input type="text" id="s_socialsub" /></div>
+      <div class="field"><label>Hướng dẫn mua (chân trang, mỗi dòng 1 bước)</label><textarea id="s_buyguide"></textarea></div>
+    </div>
+    <div style="text-align:right"><button class="btn green sm" id="saveCfgBtn2">💾 Lưu cài đặt</button></div>
+  </div>
+
   <!-- Danh sách món -->
   <div class="panel">
     <h2 style="justify-content:space-between">
@@ -295,12 +325,19 @@ function bindSettings() {
   $("#p_zalo").value = p.zalo || ""; $("#p_zalolink").value = p.zalo_link || ""; $("#p_note").value = p.note || "";
   $("#s_facebook").value = s.facebook || ""; $("#s_tiktok").value = s.tiktok || "";
   $("#s_youtube").value = s.youtube || ""; $("#s_instagram").value = s.instagram || "";
+  $("#s_seotitle").value = s.seo_title || ""; $("#s_seodesc").value = s.seo_description || "";
+  $("#s_seokw").value = s.seo_keywords || ""; $("#s_ogimage").value = s.og_image || "";
+  $("#s_eyebrow").value = s.hero_eyebrow || ""; $("#s_herocta").value = s.hero_cta || "";
+  $("#s_about").value = s.about || ""; $("#s_socialsub").value = s.social_sub || ""; $("#s_buyguide").value = s.buy_guide || "";
+  updateOgPreview();
   $("#brandLabel").textContent = s.brand || "Bếp Của Vợ";
 
   const map = {
     s_brand:["site","brand"], s_logo:["site","logo_emoji"], s_htitle:["site","hero_title"],
     s_hsub:["site","hero_subtitle"], s_accent:["site","accent_color"], s_email:["site","email"],
     s_facebook:["site","facebook"], s_tiktok:["site","tiktok"], s_youtube:["site","youtube"], s_instagram:["site","instagram"],
+    s_seotitle:["site","seo_title"], s_seodesc:["site","seo_description"], s_seokw:["site","seo_keywords"], s_ogimage:["site","og_image"],
+    s_eyebrow:["site","hero_eyebrow"], s_herocta:["site","hero_cta"], s_about:["site","about"], s_socialsub:["site","social_sub"], s_buyguide:["site","buy_guide"],
     p_bankcode:["payment","bank_code"], p_bankname:["payment","bank_name"], p_acc:["payment","account_number"],
     p_holder:["payment","account_holder"], p_zalo:["payment","zalo"], p_zalolink:["payment","zalo_link"], p_note:["payment","note"]
   };
@@ -309,11 +346,32 @@ function bindSettings() {
     const handler = e => {
       STATE[grp][key] = e.target.value;
       if (id === "s_brand") $("#brandLabel").textContent = e.target.value;
+      if (id === "s_ogimage") updateOgPreview();
       queueSaveConfig();
     };
     el.oninput = handler; el.onchange = handler;
   });
 }
+
+function updateOgPreview() {
+  const u = (STATE.site || {}).og_image;
+  const img = $("#og_preview");
+  if (u) { img.src = u; img.style.display = "block"; } else { img.style.display = "none"; }
+}
+
+$("#og_file").onchange = async e => {
+  const f = e.target.files[0]; e.target.value = "";
+  if (!f) return;
+  $("#og_uploading").style.display = "inline";
+  try {
+    const data = await compressImage(f, 1200, 0.82);
+    const r = await api("upload_image", { data });
+    STATE.site.og_image = r.url; $("#s_ogimage").value = r.url;
+    updateOgPreview(); saveConfigNow();
+  } catch (err) { toast("Lỗi tải ảnh: " + (err.message || err), true); }
+  $("#og_uploading").style.display = "none";
+};
+$("#saveCfgBtn2").onclick = saveConfigNow;
 
 /* ---------- Recipe list ---------- */
 function renderAll() {
