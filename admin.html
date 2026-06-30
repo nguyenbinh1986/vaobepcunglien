@@ -112,10 +112,12 @@
     </div>
     <div class="field"><label>Tiêu đề lớn (Hero) — dùng &lt;span class="hl"&gt;...&lt;/span&gt; để tô màu</label><input type="text" id="s_htitle" /></div>
     <div class="field"><label>Mô tả phụ</label><input type="text" id="s_hsub" /></div>
-    <div class="grid2">
-      <div class="field"><label>Màu nhấn (accent)</label><input type="text" id="s_accent" placeholder="#e8542f" /></div>
+    <div class="grid3">
+      <div class="field"><label>Màu nhấn (chữ/nút nổi bật)</label><input type="color" id="s_accent" value="#e8542f" style="height:44px;padding:4px;cursor:pointer" /></div>
+      <div class="field"><label>Màu nền trang</label><input type="color" id="s_bg" value="#faf6f0" style="height:44px;padding:4px;cursor:pointer" /></div>
       <div class="field"><label>Email liên hệ</label><input type="text" id="s_email" /></div>
     </div>
+    <div class="hint" style="margin-top:-6px">💡 Nên chọn màu nền sáng nhẹ để chữ dễ đọc. <button type="button" class="btn ghost sm" id="resetColors" style="margin-left:8px">↺ Về màu mặc định</button></div>
     <div class="divider"></div>
     <div class="grid3">
       <div class="field"><label>Mã ngân hàng (VietQR)</label>
@@ -328,7 +330,7 @@ function bindSettings() {
   const s = STATE.site, p = STATE.payment;
   $("#s_brand").value = s.brand || ""; $("#s_logo").value = s.logo_emoji || "";
   $("#s_htitle").value = s.hero_title || ""; $("#s_hsub").value = s.hero_subtitle || "";
-  $("#s_accent").value = s.accent_color || ""; $("#s_email").value = s.email || "";
+  $("#s_accent").value = s.accent_color || "#e8542f"; $("#s_bg").value = s.bg_color || "#faf6f0"; $("#s_email").value = s.email || "";
   $("#p_bankcode").value = p.bank_code || "970422"; $("#p_bankname").value = p.bank_name || "";
   $("#p_acc").value = p.account_number || ""; $("#p_holder").value = p.account_holder || "";
   $("#p_zalo").value = p.zalo || ""; $("#p_zalolink").value = p.zalo_link || ""; $("#p_note").value = p.note || "";
@@ -343,7 +345,7 @@ function bindSettings() {
 
   const map = {
     s_brand:["site","brand"], s_logo:["site","logo_emoji"], s_htitle:["site","hero_title"],
-    s_hsub:["site","hero_subtitle"], s_accent:["site","accent_color"], s_email:["site","email"],
+    s_hsub:["site","hero_subtitle"], s_accent:["site","accent_color"], s_bg:["site","bg_color"], s_email:["site","email"],
     s_facebook:["site","facebook"], s_tiktok:["site","tiktok"], s_youtube:["site","youtube"], s_instagram:["site","instagram"],
     s_seotitle:["site","seo_title"], s_seodesc:["site","seo_description"], s_seokw:["site","seo_keywords"], s_ogimage:["site","og_image"],
     s_eyebrow:["site","hero_eyebrow"], s_herocta:["site","hero_cta"], s_about:["site","about"], s_socialsub:["site","social_sub"], s_buyguide:["site","buy_guide"],
@@ -381,6 +383,11 @@ $("#og_file").onchange = async e => {
   $("#og_uploading").style.display = "none";
 };
 $("#saveCfgBtn2").onclick = saveConfigNow;
+$("#resetColors").onclick = () => {
+  STATE.site.accent_color = "#e8542f"; STATE.site.bg_color = "#faf6f0";
+  $("#s_accent").value = "#e8542f"; $("#s_bg").value = "#faf6f0";
+  saveConfigNow(); toast("✓ Đã về màu mặc định");
+};
 
 /* ---------- Recipe list ---------- */
 function renderAll() {

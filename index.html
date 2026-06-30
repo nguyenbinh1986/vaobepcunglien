@@ -64,7 +64,7 @@
   /* Header */
   header {
     position: sticky; top: 0; z-index: 30;
-    background: rgba(250, 246, 240, 0.92);
+    background: var(--bg);
     backdrop-filter: blur(10px);
     border-bottom: 1px solid var(--line);
   }
@@ -348,6 +348,7 @@ function renderSite() {
   const s = DATA.site || {};
   const p = DATA.payment || {};
   if (s.accent_color) document.documentElement.style.setProperty("--accent", s.accent_color);
+  if (s.bg_color) document.documentElement.style.setProperty("--bg", s.bg_color);
   $("#brandLogo").textContent = s.logo_emoji || "🍲";
   $("#brandName").textContent = s.brand || "Bếp Của Vợ";
   $("#footBrand").textContent = $("#footBrand2").textContent = s.brand || "Bếp Của Vợ";
