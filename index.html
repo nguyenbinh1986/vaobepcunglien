@@ -49,6 +49,8 @@
     --accent-dark: #c5421f;
     --gold: #d9a441;
     --green: #2f9e55;
+    --footer-bg: #2a2118;
+    --footer-ink: #d9cdbb;
     --shadow: 0 10px 30px rgba(60, 40, 20, 0.10);
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -83,7 +85,7 @@
   /* Hero */
   .hero { padding: 64px 0 40px; text-align: center; }
   .hero .eyebrow {
-    display: inline-block; background: #fff; border: 1px solid var(--line);
+    display: inline-block; background: var(--card); border: 1px solid var(--line);
     color: var(--accent); font-weight: 600; font-size: 13px;
     padding: 6px 14px; border-radius: 999px; margin-bottom: 22px;
   }
@@ -97,7 +99,7 @@
   /* Filter */
   .filters { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin: 34px 0 10px; }
   .chip {
-    border: 1px solid var(--line); background: #fff; color: var(--ink);
+    border: 1px solid var(--line); background: var(--card); color: var(--ink);
     padding: 8px 16px; border-radius: 999px; font-size: 14px; font-weight: 500; cursor: pointer;
     transition: .15s;
   }
@@ -141,17 +143,17 @@
   .modal-body { padding: 24px 26px 30px; }
   .modal-body h2 { font-size: 28px; margin-bottom: 6px; }
   .modal-tags { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0 18px; }
-  .tag { background: #fff; border: 1px solid var(--line); font-size: 13px; padding: 5px 12px; border-radius: 999px; color: var(--muted); }
+  .tag { background: var(--card); border: 1px solid var(--line); font-size: 13px; padding: 5px 12px; border-radius: 999px; color: var(--muted); }
   .modal-teaser { color: var(--ink); margin-bottom: 22px; }
 
   /* Lock / paywall */
-  .paywall { background: #fff; border: 1px solid var(--line); border-radius: 18px; padding: 24px; text-align: center; }
+  .paywall { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 24px; text-align: center; }
   .paywall .lock-ic { font-size: 40px; }
   .paywall h3 { font-size: 20px; margin: 8px 0 4px; }
   .paywall p { color: var(--muted); font-size: 14px; margin-bottom: 18px; }
   .pay-grid { display: grid; grid-template-columns: 200px 1fr; gap: 22px; text-align: left; align-items: start; }
   @media (max-width: 560px) { .pay-grid { grid-template-columns: 1fr; } }
-  .qr-box { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 10px; }
+  .qr-box { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 10px; }
   .qr-box img { width: 100%; border-radius: 8px; display: block; background: #f3ece1; min-height: 180px; }
   .qr-save { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 10px; background: var(--ink); color: #fff; font-weight: 600; font-size: 13px; padding: 10px 12px; border-radius: 10px; cursor: pointer; }
   .qr-save:active { transform: scale(.98); }
@@ -203,16 +205,16 @@
   .lb-counter { position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%); color: #fff; background: rgba(0,0,0,.5); padding: 5px 14px; border-radius: 999px; font-size: 14px; }
   @media (max-width: 560px) { .lb-nav { width: 42px; height: 42px; font-size: 26px; } }
 
-  footer { background: #2a2118; color: #d9cdbb; padding: 50px 0 40px; margin-top: 30px; }
+  footer { background: var(--footer-bg); color: var(--footer-ink); padding: 50px 0 40px; margin-top: 30px; }
   footer .cols { display: flex; flex-wrap: wrap; gap: 40px; justify-content: space-between; }
-  footer h4 { color: #fff; margin-bottom: 12px; font-size: 16px; }
-  footer p, footer a { font-size: 14px; color: #c9bca8; }
-  footer .copy { border-top: 1px solid #463a2c; margin-top: 30px; padding-top: 20px; font-size: 13px; color: #978876; }
+  footer h4 { color: var(--footer-ink); margin-bottom: 12px; font-size: 16px; }
+  footer p, footer a { font-size: 14px; color: var(--footer-ink); opacity: .8; }
+  footer .copy { border-top: 1px solid rgba(255,255,255,.12); margin-top: 30px; padding-top: 20px; font-size: 13px; color: var(--footer-ink); opacity: .6; }
 
   .empty { text-align: center; color: var(--muted); padding: 60px 0; }
 
   /* Social */
-  .social-band { background: #fff; border-top: 1px solid var(--line); padding: 40px 0; text-align: center; }
+  .social-band { background: var(--card); border-top: 1px solid var(--line); padding: 40px 0; text-align: center; }
   .social-band h3 { font-size: clamp(20px, 3vw, 26px); margin-bottom: 6px; }
   .social-band .sub { color: var(--muted); font-size: 14px; margin-bottom: 20px; }
   .soc-row { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
@@ -224,7 +226,7 @@
   .soc.yt { background: #ff0000; }
   .soc.ig { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); }
   .foot-soc { display: flex; gap: 10px; margin-top: 14px; }
-  .foot-soc a { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: #463a2c; color: #fff; }
+  .foot-soc a { width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; background: rgba(255,255,255,.14); color: #fff; }
   .foot-soc a:hover { background: var(--accent); }
   .foot-soc svg { width: 18px; height: 18px; }
 </style>
@@ -233,7 +235,7 @@
 <header>
   <div class="wrap nav">
     <a class="brand" href="#"><span class="logo" id="brandLogo">🍲</span><span id="brandName">Bếp Của Vợ</span></a>
-    <a class="nav-cta" href="#mon-an">Xem thực đơn</a>
+    <a class="nav-cta" href="#mon-an" id="navCta">Xem thực đơn</a>
   </div>
 </header>
 
@@ -347,8 +349,8 @@ async function init() {
 function renderSite() {
   const s = DATA.site || {};
   const p = DATA.payment || {};
-  if (s.accent_color) document.documentElement.style.setProperty("--accent", s.accent_color);
-  if (s.bg_color) document.documentElement.style.setProperty("--bg", s.bg_color);
+  applyTheme(s);
+  if (s.nav_cta) $("#navCta").textContent = s.nav_cta;
   $("#brandLogo").textContent = s.logo_emoji || "🍲";
   $("#brandName").textContent = s.brand || "Bếp Của Vợ";
   $("#footBrand").textContent = $("#footBrand2").textContent = s.brand || "Bếp Của Vợ";
@@ -376,6 +378,31 @@ function renderSite() {
 }
 
 function esc(x){ return String(x==null?"":x).replace(/[&<>]/g, c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c])); }
+
+function darken(hex, amt) {
+  try {
+    const n = parseInt(String(hex).replace("#",""), 16);
+    let r=(n>>16)&255, g=(n>>8)&255, b=n&255;
+    r=Math.round(r*(1-amt)); g=Math.round(g*(1-amt)); b=Math.round(b*(1-amt));
+    return "#"+[r,g,b].map(x=>x.toString(16).padStart(2,"0")).join("");
+  } catch(e){ return hex; }
+}
+
+// Áp dụng toàn bộ màu giao diện từ cấu hình
+function applyTheme(s) {
+  const root = document.documentElement.style;
+  const set = (k,v) => { if (v) root.setProperty(k, v); };
+  set("--bg", s.bg_color);
+  set("--card", s.card_color);
+  set("--ink", s.ink_color);
+  set("--muted", s.muted_color);
+  set("--line", s.line_color);
+  set("--accent", s.accent_color);
+  if (s.accent_color) set("--accent-dark", darken(s.accent_color, 0.16));
+  set("--gold", s.gold_color);
+  set("--footer-bg", s.footer_bg);
+  set("--footer-ink", s.footer_ink);
+}
 
 function setMeta(attr, key, val) {
   if (!val) return;
@@ -582,6 +609,7 @@ async function refreshContent(r) {
 
 function renderPaywall(r) {
   const p = DATA.payment || {};
+  const s = DATA.site || {};
   const qr = qrUrl(r);
   const zalo = p.zalo_link || (p.zalo ? "https://zalo.me/" + p.zalo.replace(/\D/g, "") : "#");
   const autoBanner = autoOn()
@@ -592,8 +620,8 @@ function renderPaywall(r) {
   $("#modalGate").innerHTML = `
     <div class="paywall">
       <div class="lock-ic">🔒</div>
-      <h3>Mở khóa công thức + video</h3>
-      <p>Chuyển khoản để nhận công thức chi tiết và video hướng dẫn từng bước.</p>
+      <h3>${esc(s.paywall_title || "Mở khóa công thức + video")}</h3>
+      <p>${esc(s.paywall_sub || "Chuyển khoản để nhận công thức chi tiết và video hướng dẫn từng bước.")}</p>
       <div class="pay-grid">
         <div class="qr-box">
           ${qr ? `<img src="${qr}" alt="QR thanh toán" onerror="this.style.minHeight='0';this.alt='Quét QR / chuyển khoản theo thông tin bên cạnh'">`

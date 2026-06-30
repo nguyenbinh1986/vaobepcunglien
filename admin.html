@@ -76,6 +76,15 @@
   .img-grid .thumb .ord { position:absolute; bottom:2px; left:3px; background:rgba(0,0,0,.6); color:#fff; font-size:10px; padding:1px 5px; border-radius:6px; }
   .img-upload-btn { display:inline-flex; align-items:center; gap:6px; background:var(--panel); border:1px dashed var(--line); border-radius:10px; padding:9px 16px; cursor:pointer; font-size:13px; color:var(--gold); font-weight:600; }
   .img-uploading { font-size:12px; color:var(--gold); margin-top:8px; display:none; }
+  .theme-row { display:flex; gap:12px; flex-wrap:wrap; }
+  .theme-card { cursor:pointer; border:2px solid var(--line); border-radius:12px; overflow:hidden; width:118px; background:var(--panel2); transition:.15s; }
+  .theme-card:hover { border-color:var(--accent); transform:translateY(-2px); }
+  .theme-card .sw { height:44px; display:flex; }
+  .theme-card .sw i { flex:1; }
+  .theme-card .nm { font-size:12px; padding:6px 4px; text-align:center; color:var(--ink); font-weight:600; }
+  .color-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(155px,1fr)); gap:10px; }
+  .cf { display:flex; align-items:center; justify-content:space-between; gap:8px; background:var(--panel2); border:1px solid var(--line); border-radius:10px; padding:7px 12px; font-size:13px; color:var(--muted); }
+  .cf input[type=color] { width:44px; height:30px; padding:2px; border:none; background:none; cursor:pointer; flex:none; }
 </style>
 </head>
 <body>
@@ -112,12 +121,7 @@
     </div>
     <div class="field"><label>Tiêu đề lớn (Hero) — dùng &lt;span class="hl"&gt;...&lt;/span&gt; để tô màu</label><input type="text" id="s_htitle" /></div>
     <div class="field"><label>Mô tả phụ</label><input type="text" id="s_hsub" /></div>
-    <div class="grid3">
-      <div class="field"><label>Màu nhấn (chữ/nút nổi bật)</label><input type="color" id="s_accent" value="#e8542f" style="height:44px;padding:4px;cursor:pointer" /></div>
-      <div class="field"><label>Màu nền trang</label><input type="color" id="s_bg" value="#faf6f0" style="height:44px;padding:4px;cursor:pointer" /></div>
-      <div class="field"><label>Email liên hệ</label><input type="text" id="s_email" /></div>
-    </div>
-    <div class="hint" style="margin-top:-6px">💡 Nên chọn màu nền sáng nhẹ để chữ dễ đọc. <button type="button" class="btn ghost sm" id="resetColors" style="margin-left:8px">↺ Về màu mặc định</button></div>
+    <div class="field"><label>Email liên hệ</label><input type="text" id="s_email" /></div>
     <div class="divider"></div>
     <div class="grid3">
       <div class="field"><label>Mã ngân hàng (VietQR)</label>
@@ -146,6 +150,29 @@
     <div style="text-align:right"><button class="btn green sm" id="saveCfgBtn">💾 Lưu cài đặt</button></div>
   </div>
 
+  <!-- Giao diện & màu sắc -->
+  <div class="panel">
+    <h2>🎨 Giao diện &amp; Màu sắc</h2>
+    <div class="field">
+      <label>Mẫu có sẵn — bấm 1 cái đổi cả bộ màu (hài hòa, chuyên nghiệp)</label>
+      <div class="theme-row" id="themeRow"></div>
+    </div>
+    <div class="divider"></div>
+    <label style="margin-bottom:10px;display:block">Hoặc chỉnh từng màu</label>
+    <div class="color-grid">
+      <div class="cf"><span>Màu nhấn / nút</span><input type="color" id="s_accent" value="#e8542f" /></div>
+      <div class="cf"><span>Màu nền trang</span><input type="color" id="s_bg" value="#faf6f0" /></div>
+      <div class="cf"><span>Màu thẻ/khối</span><input type="color" id="s_card" value="#ffffff" /></div>
+      <div class="cf"><span>Màu chữ chính</span><input type="color" id="s_ink" value="#2a2118" /></div>
+      <div class="cf"><span>Màu chữ phụ</span><input type="color" id="s_muted" value="#8a7d6c" /></div>
+      <div class="cf"><span>Màu viền</span><input type="color" id="s_line" value="#ece3d6" /></div>
+      <div class="cf"><span>Màu logo phụ</span><input type="color" id="s_gold" value="#d9a441" /></div>
+      <div class="cf"><span>Nền chân trang</span><input type="color" id="s_footerbg" value="#2a2118" /></div>
+      <div class="cf"><span>Chữ chân trang</span><input type="color" id="s_footerink" value="#d9cdbb" /></div>
+    </div>
+    <div class="hint" style="margin-top:10px">💡 Để chữ dễ đọc: nền sáng đi với chữ tối (hoặc ngược lại). <button type="button" class="btn ghost sm" id="resetColors" style="margin-left:8px">↺ Về mặc định</button></div>
+  </div>
+
   <!-- SEO & nội dung hiển thị -->
   <div class="panel">
     <h2>🔎 SEO &amp; Nội dung hiển thị <span style="font-weight:400;color:var(--muted);font-size:13px">(giúp lên Google + nói trúng khách)</span></h2>
@@ -171,7 +198,12 @@
     <div class="field"><label>Giới thiệu (chân trang)</label><textarea id="s_about"></textarea></div>
     <div class="grid2">
       <div class="field"><label>Phụ đề mục mạng xã hội</label><input type="text" id="s_socialsub" /></div>
-      <div class="field"><label>Hướng dẫn mua (chân trang, mỗi dòng 1 bước)</label><textarea id="s_buyguide"></textarea></div>
+      <div class="field"><label>Nút trên cùng (góc phải)</label><input type="text" id="s_navcta" placeholder="Xem thực đơn" /></div>
+    </div>
+    <div class="field"><label>Hướng dẫn mua (chân trang, mỗi dòng 1 bước)</label><textarea id="s_buyguide"></textarea></div>
+    <div class="grid2">
+      <div class="field"><label>Tiêu đề màn mở khóa</label><input type="text" id="s_pwtitle" placeholder="Mở khóa công thức + video" /></div>
+      <div class="field"><label>Mô tả màn mở khóa</label><input type="text" id="s_pwsub" placeholder="Chuyển khoản để nhận công thức chi tiết..." /></div>
     </div>
     <div style="text-align:right"><button class="btn green sm" id="saveCfgBtn2">💾 Lưu cài đặt</button></div>
   </div>
@@ -307,6 +339,7 @@ function showApp() {
   $("#login").style.display = "none";
   $("#app").style.display = "block";
   renderBanks();
+  renderThemes();
   bindSettings();
   renderAll();
 }
@@ -330,7 +363,12 @@ function bindSettings() {
   const s = STATE.site, p = STATE.payment;
   $("#s_brand").value = s.brand || ""; $("#s_logo").value = s.logo_emoji || "";
   $("#s_htitle").value = s.hero_title || ""; $("#s_hsub").value = s.hero_subtitle || "";
-  $("#s_accent").value = s.accent_color || "#e8542f"; $("#s_bg").value = s.bg_color || "#faf6f0"; $("#s_email").value = s.email || "";
+  $("#s_email").value = s.email || "";
+  $("#s_accent").value = s.accent_color || "#e8542f"; $("#s_bg").value = s.bg_color || "#faf6f0";
+  $("#s_card").value = s.card_color || "#ffffff"; $("#s_ink").value = s.ink_color || "#2a2118";
+  $("#s_muted").value = s.muted_color || "#8a7d6c"; $("#s_line").value = s.line_color || "#ece3d6";
+  $("#s_gold").value = s.gold_color || "#d9a441"; $("#s_footerbg").value = s.footer_bg || "#2a2118"; $("#s_footerink").value = s.footer_ink || "#d9cdbb";
+  $("#s_navcta").value = s.nav_cta || ""; $("#s_pwtitle").value = s.paywall_title || ""; $("#s_pwsub").value = s.paywall_sub || "";
   $("#p_bankcode").value = p.bank_code || "970422"; $("#p_bankname").value = p.bank_name || "";
   $("#p_acc").value = p.account_number || ""; $("#p_holder").value = p.account_holder || "";
   $("#p_zalo").value = p.zalo || ""; $("#p_zalolink").value = p.zalo_link || ""; $("#p_note").value = p.note || "";
@@ -345,10 +383,13 @@ function bindSettings() {
 
   const map = {
     s_brand:["site","brand"], s_logo:["site","logo_emoji"], s_htitle:["site","hero_title"],
-    s_hsub:["site","hero_subtitle"], s_accent:["site","accent_color"], s_bg:["site","bg_color"], s_email:["site","email"],
+    s_hsub:["site","hero_subtitle"], s_email:["site","email"],
+    s_accent:["site","accent_color"], s_bg:["site","bg_color"], s_card:["site","card_color"], s_ink:["site","ink_color"],
+    s_muted:["site","muted_color"], s_line:["site","line_color"], s_gold:["site","gold_color"], s_footerbg:["site","footer_bg"], s_footerink:["site","footer_ink"],
     s_facebook:["site","facebook"], s_tiktok:["site","tiktok"], s_youtube:["site","youtube"], s_instagram:["site","instagram"],
     s_seotitle:["site","seo_title"], s_seodesc:["site","seo_description"], s_seokw:["site","seo_keywords"], s_ogimage:["site","og_image"],
     s_eyebrow:["site","hero_eyebrow"], s_herocta:["site","hero_cta"], s_about:["site","about"], s_socialsub:["site","social_sub"], s_buyguide:["site","buy_guide"],
+    s_navcta:["site","nav_cta"], s_pwtitle:["site","paywall_title"], s_pwsub:["site","paywall_sub"],
     p_bankcode:["payment","bank_code"], p_bankname:["payment","bank_name"], p_acc:["payment","account_number"],
     p_holder:["payment","account_holder"], p_zalo:["payment","zalo"], p_zalolink:["payment","zalo_link"], p_note:["payment","note"]
   };
@@ -383,11 +424,33 @@ $("#og_file").onchange = async e => {
   $("#og_uploading").style.display = "none";
 };
 $("#saveCfgBtn2").onclick = saveConfigNow;
-$("#resetColors").onclick = () => {
-  STATE.site.accent_color = "#e8542f"; STATE.site.bg_color = "#faf6f0";
-  $("#s_accent").value = "#e8542f"; $("#s_bg").value = "#faf6f0";
-  saveConfigNow(); toast("✓ Đã về màu mặc định");
-};
+
+/* ---------- Mẫu giao diện & màu ---------- */
+const THEME_FIELDS = ["accent_color","bg_color","card_color","ink_color","muted_color","line_color","gold_color","footer_bg","footer_ink"];
+const THEME_INPUT = { accent_color:"s_accent", bg_color:"s_bg", card_color:"s_card", ink_color:"s_ink", muted_color:"s_muted", line_color:"s_line", gold_color:"s_gold", footer_bg:"s_footerbg", footer_ink:"s_footerink" };
+const THEMES = [
+  { name:"Cam ấm",      accent_color:"#e8542f", bg_color:"#faf6f0", card_color:"#ffffff", ink_color:"#2a2118", muted_color:"#8a7d6c", line_color:"#ece3d6", gold_color:"#d9a441", footer_bg:"#2a2118", footer_ink:"#d9cdbb" },
+  { name:"Hồng ngọt",   accent_color:"#e84393", bg_color:"#fff5f7", card_color:"#ffffff", ink_color:"#3a2630", muted_color:"#a07d88", line_color:"#f5e2e8", gold_color:"#f3a8c4", footer_bg:"#3a2630", footer_ink:"#efd6e0" },
+  { name:"Xanh tươi",   accent_color:"#16a34a", bg_color:"#f1f8f3", card_color:"#ffffff", ink_color:"#1f2e22", muted_color:"#7a9183", line_color:"#d9ecdf", gold_color:"#84cc16", footer_bg:"#1f2e22", footer_ink:"#d2e7d8" },
+  { name:"Vàng sang",   accent_color:"#c98a2b", bg_color:"#faf6ee", card_color:"#ffffff", ink_color:"#2e271b", muted_color:"#978a73", line_color:"#ece2cf", gold_color:"#e0b25a", footer_bg:"#2e271b", footer_ink:"#e8dabf" },
+  { name:"Đỏ nhà hàng", accent_color:"#d32f2f", bg_color:"#fbf6f5", card_color:"#ffffff", ink_color:"#2a1c1c", muted_color:"#9b8585", line_color:"#efe2e0", gold_color:"#e08a3c", footer_bg:"#2a1c1c", footer_ink:"#e8d2d2" },
+  { name:"Tím hiện đại",accent_color:"#7c3aed", bg_color:"#f6f4fc", card_color:"#ffffff", ink_color:"#271e3a", muted_color:"#8a82a0", line_color:"#e6e0f3", gold_color:"#a78bfa", footer_bg:"#271e3a", footer_ink:"#ddd6ee" },
+  { name:"Xanh biển",   accent_color:"#0ea5e9", bg_color:"#f0f7fb", card_color:"#ffffff", ink_color:"#1b2a33", muted_color:"#7a8c98", line_color:"#dceaf2", gold_color:"#38bdf8", footer_bg:"#1b2a33", footer_ink:"#d2e2ec" }
+];
+function renderThemes() {
+  $("#themeRow").innerHTML = THEMES.map((t,i) =>
+    `<div class="theme-card" onclick="pickTheme(${i})">
+       <div class="sw"><i style="background:${t.bg_color}"></i><i style="background:${t.card_color}"></i><i style="background:${t.accent_color}"></i><i style="background:${t.footer_bg}"></i></div>
+       <div class="nm">${t.name}</div>
+     </div>`
+  ).join("");
+}
+function setTheme(t) {
+  THEME_FIELDS.forEach(f => { STATE.site[f] = t[f]; const el = $("#" + THEME_INPUT[f]); if (el) el.value = t[f]; });
+  saveConfigNow();
+}
+window.pickTheme = i => { setTheme(THEMES[i]); toast("✓ Đã đổi giao diện: " + THEMES[i].name); };
+$("#resetColors").onclick = () => { setTheme(THEMES[0]); toast("✓ Đã về màu mặc định"); };
 
 /* ---------- Recipe list ---------- */
 function renderAll() {
