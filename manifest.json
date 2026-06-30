@@ -1,0 +1,15 @@
+{
+  "name": "Bếp Của Liên",
+  "short_name": "Bếp Của Liên",
+  "description": "Công thức nấu ăn để kinh doanh đồ ăn vặt — dễ làm, bán chạy.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#faf6f0",
+  "theme_color": "#e8542f",
+  "lang": "vi",
+  "icons": [
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
