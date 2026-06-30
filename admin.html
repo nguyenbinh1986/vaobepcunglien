@@ -202,7 +202,16 @@
       <div class="field"><label>Emoji (nếu chưa có ảnh)</label><input type="text" id="e_emoji" maxlength="4" placeholder="🍜" /></div>
       <div class="field"><label>Giá (đ) *</label><input type="number" id="e_price" /></div>
     </div>
-    <div class="field"><label>Ảnh món (URL — tuỳ chọn)</label><input type="text" id="e_image" placeholder="https://..." /></div>
+    <div class="field">
+      <label>🖼️ Ảnh bìa món (khách thấy TRƯỚC khi mở khóa — nên có để hấp dẫn)</label>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <img id="e_image_prev" alt="" style="display:none;width:120px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--line)" />
+        <label class="img-upload-btn" for="e_imagefile">＋ Tải ảnh bìa</label>
+        <input type="file" id="e_imagefile" accept="image/*" style="display:none" />
+        <span class="img-uploading" id="e_image_up">⏳ Đang tải...</span>
+      </div>
+      <input type="text" id="e_image" placeholder="hoặc dán link ảnh https://..." style="margin-top:8px" />
+    </div>
     <div class="grid3">
       <div class="field"><label>Thời gian</label><input type="text" id="e_time" placeholder="45 phút" /></div>
       <div class="field"><label>Độ khó</label><input type="text" id="e_diff" placeholder="Dễ" /></div>
@@ -452,6 +461,25 @@ $("#e_imgfile").onchange = async e => {
   $("#e_imguploading").style.display = "none";
 };
 
+// Ảnh bìa món (trước khi mở khóa)
+function updateCoverPreview() {
+  const u = $("#e_image").value.trim();
+  const img = $("#e_image_prev");
+  if (u) { img.src = u; img.style.display = "block"; } else { img.style.display = "none"; }
+}
+$("#e_image").oninput = updateCoverPreview;
+$("#e_imagefile").onchange = async e => {
+  const f = e.target.files[0]; e.target.value = "";
+  if (!f) return;
+  $("#e_image_up").style.display = "inline";
+  try {
+    const data = await compressImage(f, 1000, 0.8);
+    const r = await api("upload_image", { data });
+    $("#e_image").value = r.url; updateCoverPreview();
+  } catch (err) { toast("Lỗi tải ảnh: " + (err.message || err), true); }
+  $("#e_image_up").style.display = "none";
+};
+
 function openEditor(i) {
   editIndex = i;
   const r = i >= 0 ? STATE.recipes[i] : {};
@@ -470,6 +498,7 @@ function openEditor(i) {
   $("#e_tips").value = c.tips || "";
   $("#e_code").value = sec.unlock_code || "";
   editorImages = (c.images || []).slice(); renderEditorImages();
+  updateCoverPreview();
   $("#editorOv").classList.add("show");
 }
 window.editRecipe = openEditor;
